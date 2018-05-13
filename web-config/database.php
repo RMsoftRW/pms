@@ -65,6 +65,7 @@ class mysqldatabase {
 
 		if($this->new_enough_php){
 		if($this->magic_quotes_active){$value = stripslashes($value);}
+		$value = htmlspecialchars($value,ENT_QUOTES);
 		$value = mysqli_real_escape_string($this->connection,$value);
 		}
 		else{

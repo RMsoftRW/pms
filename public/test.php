@@ -1,4 +1,6 @@
-<?php
-require_once "includes/Enc.php";
-echo $hash->encode("hello");
-echo $hash->decode("hello");
+<html>
+<script>
+    var a = /^\+?\d{10,13}/;
+    console.log(a.test("+2507824251614"));
+</script>
+</html>

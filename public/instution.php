@@ -70,7 +70,7 @@ require_once '../web-config/database.php';
                         <form>
                         <div style="display: inline;">
                         <i class="fa fa-search pull-right" style="position:absolute;margin-left: 18%;margin-top: 10px;"></i>
-                        <input class="form-control pull-right" placeholder="Search ... " maxlength="20" id="search" aria-label="Search" type="text" name="search" style="border: none;border-bottom: 1px solid #095C7E;background: transparent;box-shadow: none;color: #095C7E"> 
+                        <input class="form-control pull-right" placeholder="Search ... " maxlength="20" id="search" aria-label="Search" type="text" name="search" data-id="<?=$Hash->decrypt($_GET['id'])?>" style="border: none;border-bottom: 1px solid #095C7E;background: transparent;box-shadow: none;color: #095C7E">
                         </div>
                     </form>
                     </div>
@@ -165,6 +165,7 @@ require_once '../web-config/database.php';
                 type : 'POST',
                 data : {
                     'search' : $(this).val(),
+                    'id'     : $(this).data('id')
                 },
                 success : function(data){
                     $(".search_data").append(data);

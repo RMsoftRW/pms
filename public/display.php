@@ -12,44 +12,46 @@
                 $id=$Hash->decrypt($_GET['id']);
                 $stmt = $database->query("SELECT *  FROM institution_details WHERE id = '$id'");
                 $row = $database->fetch_array($stmt);
-             ?>
-            
-            <?php 
+                $user= $_SESSION['username'];
+                $stmtu = $database->query("SELECT *  FROM user WHERE username = '$user'");
+                $rowu = $database->fetch_array($stmtu);
+             
             // save new car
-             $user= $_SESSION['username'];
                 if(isset($_POST['savec'])){
 
-        $_POST = array_map( 'stripslashes', $_POST );
+                  $_POST = array_map( 'stripslashes', $_POST );
 
-        //collect form data
-        extract($_POST);
+                  //collect form data
+                  extract($_POST);
 
-        
+                  
 
-        if(!isset($error)){
+                  if(!isset($error)){
 
-            try {
+                      try {
 
-                $owner = $row['id'];
+                          $owner = $row['id'];
+                          $plt = $database->escape_value($plate_nber);
+                          $mdl = $database->escape_value($model);
+                          $insc = $database->escape_value($insurance_camp);
+                          //insert into database
+                          $stmtca = $database->query("INSERT INTO cars (plate_nber,model,insurance_camp,owner,owner_type)
+                          VALUES ('$plt', '$mdl', '$insc', '$owner', '1')") ;
+                          
 
-                //insert into database
-                $stmtca = $database->query("INSERT INTO cars (plate_nber,model,insurance_camp,owner,status)
-                 VALUES ('$plate_nber', '$model', '$insurance_camp', '$owner', 'active')") ;
-                
+                             
+                          //redirect to index page
+                          $values['id']=$row['id'];
+                          header('Location: display?id='. $Hash->encrypt($values['id']).'');
+                          exit;
 
-                   
-                //redirect to index page
-                 $values['id']=$row['id'];
-                header('Location: display.php?id='. $Hash->encrypt($values['id']).'');
-                exit;
+                      } catch(PDOException $e) {
+                          echo $e->getMessage();
+                      }
 
-            } catch(PDOException $e) {
-                echo $e->getMessage();
+                  }
+
             }
-
-        }
-
-    }
     // save new house
     if(isset($_POST['saveh'])){
 
@@ -64,19 +66,14 @@
 
             try {
                 $owner = $row['id'];
-                $stmtca = $database->query("INSERT INTO location (province,district,sector,cell,plot_nber,country,status)
-                 VALUES ('$province', '$district', '$sector', '$cell',' $plot_nber', '$country', 'active')") ;
-             
-                 $id_location= $database->inset_id();
+                $tp = $database->escape_value($type);
+                $loc = $database->escape_value($location);
                 //insert into database
-                $stmtca = $database->query("INSERT INTO houses (type,owner,id_location, status) VALUES ('$type', '$owner', '$id_location', 'active')");
-                
-                
-                
-                 
-                //redirect to index page
+                $stmtca = $database->query("INSERT INTO houses (type,owner, location, owner_type) VALUES ('$tp', '$owner', '$loc', '1')");
+             
+                //redirect to display page
                 $values['id']=$row['id'];
-                header('Location: display.php?id='. $Hash->encrypt($values['id']).'');
+                header('Location: display?id='. $Hash->encrypt($values['id']).'');
                 exit;
 
             } catch(PDOException $e) {
@@ -91,6 +88,7 @@
      if(isset($_POST['send'])){
 
         $_POST = array_map( 'stripslashes', $_POST );
+        $user_id= $rowu['id'];
 
         //collect form data
         extract($_POST);
@@ -102,22 +100,14 @@
             try {
 
                 $owner = $row['id'];
-                $id_institution= $row['id_institution'];
-                $stmtcat = $database->query("SELECT * FROM institution WHERE id = '$id_institution'");
-                $rowtype = $database->fetch_array($stmtcat);
-                $type= $rowtype['Name'];
-                $time= date('Y-m-d H:i:s');
-               
-
+                 $cmt = $database->escape_value($comment);
                 //insert into database
-                $stmtca = $database->query("INSERT INTO comments (user,comment,type,owner,time,status)
-                 VALUES ('$user', '$comment', '$type', '$owner', '$time', 'active')") ;
-                
-
-                   
-                //redirect to index page
+                $stmtca = $database->query("INSERT INTO comments (user,comment,attachment,owner,owner_type)
+                 VALUES ('$user_id', '$cmt', $attachment, '$owner','1')") ;
+  
+                //redirect to display page
                 $valuered['id']=$row['id'];
-                header('Location: display.php?id='.$Hash->encrypt($valuered['id']).'');
+                header('Location: display?id='.$Hash->encrypt($valuered['id']).'');
                 exit;
 
             } catch(PDOException $e) {
@@ -192,12 +182,12 @@
                                                           $pid= $row['id_institution'];
                                                           $stmt = $database->query("SELECT * FROM institution WHERE Id = '$pid' ");
                                                           $rowin = $database->fetch_array($stmt);
-                                                           $cnid= $row['country'];
-                                                        $stmtcntry = $database->query("SELECT * FROM countries WHERE id= '$cnid'");
-                                                         $rowcntry = $database->fetch_array($stmtcntry);
-                                                         $cnloc= $row['country_loc'];
-                                                        $stmtloc = $database->query("SELECT * FROM countries WHERE id= '$cnloc'");
-                                                         $rowloc = $database->fetch_array($stmtloc);
+                                                          $cnid= $row['country'];
+                                                          $stmtcntry = $database->query("SELECT * FROM countries WHERE id= '$cnid'");
+                                                          $rowcntry = $database->fetch_array($stmtcntry);
+                                                          $cnloc= $row['country_loc'];
+                                                          $stmtloc = $database->query("SELECT * FROM countries WHERE id= '$cnloc'");
+                                                          $rowloc = $database->fetch_array($stmtloc);
                                                           $value['id']= $row['id'];
                                                           if ($rowin['Name']== "O N G") {
                                                             echo '
@@ -212,13 +202,11 @@
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
                                                                        <li class="list-group-item"><b>Benefits:</b> '.$row['benefits'].'</li>
                                                                        <li class="list-group-item"><b>Meeting:</b> '.$row['meeting'].'</li>
-                                                                       <li class="list-group-item"><b>Animal contribution:</b> '.$row['animal_contribution'].'</li>
+                                                                       <li class="list-group-item"><b>Anual contribution:</b> '.$row['anual_contribution'].'</li>
                                                                        <li class="list-group-item"><b>Responsible Ministry:</b> '.$row['responsible_ministry'].'</li>
                                                                        <li class="list-group-item"><b>Attachment:</b> <a href="'.$row['attachment'].'" download>'.$row['attachment'].'</a></li>
                                                                        <li class="list-group-item"><b>Payment date:</b> '.$row['payment_date'].'</li>
-                                                                       <li class="list-group-item"><b>Start Date:</b> '.$row['start_date'].'</li>
-                                                                       <li class="list-group-item"><b>End Date:</b> '.$row['end_date'].'</li>
-                                                                       <li class="list-group-item"><a href="editong.php?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
+                                                                       <li class="list-group-item"><a href="register-ngo?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
                                                                      <button type="button" class="btn btn-secondary">Edit</button></a></li>
                                                                   ';
                                                           }
@@ -233,9 +221,7 @@
                                                                        <li class="list-group-item"><b>Contact phone:</b> '.$row['contact_phone'].'</li>
                                                                        <li class="list-group-item"><b>Country:</b> '.$rowcntry['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
-                                                                       <li class="list-group-item"><b>Start Date:</b> '.$row['start_date'].'</li>
-                                                                       <li class="list-group-item"><b>End Date:</b> '.$row['end_date'].'</li>
-                                                                       <li class="list-group-item"><a href="editrwem.php?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
+                                                                       <li class="list-group-item"><a href="register-rwandan-embassy?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
                                                                      <button type="button" class="btn btn-secondary">Edit</button></a></li>
                                                                   ';
                                                           }
@@ -251,9 +237,7 @@
                                                                        <li class="list-group-item"><b>Country:</b> '.$rowcntry['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Country Represented:</b> '.$rowloc['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
-                                                                       <li class="list-group-item"><b>Start Date:</b> '.$row['start_date'].'</li>
-                                                                       <li class="list-group-item"><b>End Date:</b> '.$row['end_date'].'</li>
-                                                                       <li class="list-group-item"><a href="editforem.php?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
+                                                                       <li class="list-group-item"><a href="register-foreign-embassy?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
                                                                      <button type="button" class="btn btn-secondary">Edit</button></a></li>
                                                                   ';
                                                           }
@@ -268,7 +252,7 @@
                                                                        <li class="list-group-item"><b>Contact phone:</b> '.$row['contact_phone'].'</li>
                                                                        <li class="list-group-item"><b>Country:</b> '.$rowcntry['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
-                                                                       <li class="list-group-item"><a href="editin.php?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
+                                                                       <li class="list-group-item"><a href="editin?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
                                                                      <button type="button" class="btn btn-secondary">Edit</button></a></li>
                                                                   ';
                                                           }
@@ -285,79 +269,76 @@
                                                          Add Car
                                                         </button>
                                                     </li>
-                                                  <?php 
-                                                
-                                                  $car_id= $Hash->decrypt($_GET['id']);
-                                                 $stmtc = $database->query("SELECT * FROM cars WHERE owner = '$car_id' AND status!='deleted' ");
-                                                 $num=$database->num_rows($stmtc);
-                                                if ($num != 0) {
-                                                    $c=1;
-                                                    while ($rowi = $database->fetch_array($stmtc)) {
-                                                      $value['id']=$rowi['id'];
-                                                        echo '
+                                                      <?php 
+                                                    
+                                                      $car_id= $Hash->decrypt($_GET['id']);
+                                                      $stmtc = $database->query("SELECT * FROM cars WHERE owner = '$car_id' AND status='1' AND owner_type = '1' ");
+                                                      $num=$database->num_rows($stmtc);
+                                                      if ($num != 0) {
+                                                          $c=1;
+                                                          while ($rowi = $database->fetch_array($stmtc)) {
+                                                            $value['id']=$rowi['id'];
+                                                              echo '
 
-                                                            <li class="list-group-item">
-                                                            <a href="cars.php?id='.$Hash->encrypt($value['id']).'">
-                                                            <b>Car'.$c.' Plate Number:</b> '.$rowi['plate_nber'].'
-                                                            </a>
-                                                           </li>
+                                                                  <li class="list-group-item">
+                                                                  <a href="cars?id='.$Hash->encrypt($value['id']).'">
+                                                                  <b>Car'.$c.' Plate Number:</b> '.$rowi['plate_nber'].'
+                                                                  </a>
+                                                                 </li>
 
-                                                            ';
-                                                            $c=$c+1;
-                                                    }
-                                                    
-                                                }
-                                                else{
-                                                    
-                                                    echo "<b>No cars</b>";
-                                                }
-                                               
-                                                    
-                                                 ?>
+                                                                  ';
+                                                                  $c=$c+1;
+                                                          }
+                                                          
+                                                      }
+                                                      else{
+                                                          
+                                                          echo "<b>No cars</b>";
+                                                      }
+                                                     
+                                                        
+                                                     ?>
                                                   </ul>
                                             </div>
                                             <!-- add house tab -->
                                             <div class="tab-pane fade" id="houses" role="tabpanel" aria-labelledby="houses-tab">
                                               <ul class="list-group list-group-flush">
-                                              <li class="list-group-item">
-                                                <button type="button" class="btn btn-success mb-1" data-toggle="modal" data-target="#addhouse">
+                                               <li class="list-group-item">
+                                                 <button type="button" class="btn btn-success mb-1" data-toggle="modal" data-target="#addhouse">
                                                   Add House
-                                               </button>
+                                                 </button>
                                                </li>
                                                  <?php 
                                                 
-                                                $house_id= $Hash->decrypt($_GET['id']);
-                                                $stmth = $database->query("SELECT * FROM houses WHERE owner = '$house_id' AND status!='deleted' ");
+                                                    $house_id= $Hash->decrypt($_GET['id']);
+                                                    $stmth = $database->query("SELECT * FROM houses WHERE owner = '$house_id' AND status='1' AND owner_type = '1' ");
                                                     $numh=$database->num_rows($stmth);
-                                                if ($numh != 0) {
-                                                  
-                                                    $n=1;
-                                                     while ($rowh = $database->fetch_array($stmth)) {
+                                                    if ($numh != 0) {
+                                                      
+                                                        $n=1;
+                                                         while ($rowh = $database->fetch_array($stmth)) {
 
-                                                              $idh=$rowh['id_location'];
-                                                            $stmtl = $database->query("SELECT * FROM Location WHERE id = '$idh' AND status!='deleted' ");
-                                                             $rowl = $database->fetch_array($stmtl);
-                                                             $valueho['id']=$rowh['id'];
-                                                             echo ' 
-                                                                  
-                                                                 <li class="list-group-item">
-                                                                 <a href="houses.php?id='.$Hash->encrypt($valueho['id']).'">
-                                                                 <div>
-                                                                <b>Type of House number '.$n.':</b> '.$rowh['type'].'<br/>
-                                                                 <b>Province:</b> '.$rowl['province'].'
-                                                                 </div>
-                                                                 </a>
-                                                                 </li>
-                                                                
-                                                               
-                                                             ';
-                                                             $n=$n+1;
-                                                         }
-                                                    
-                                                }
-                                                else{
-                                                    echo "<b>No houses</b>";   
-                                                         }   
+                                                                $valueho['id']=$rowh['id'];
+                                                                 echo ' 
+                                                                      
+                                                                     <li class="list-group-item">
+                                                                     <a href="houses?id='.$Hash->encrypt($valueho['id']).'">
+                                                                     <div>
+                                                                    <b>Type of House number '.$n.':</b> '.$rowh['type'].'<br/>
+                                                                     <b>Location:</b> '.$rowh['location'].'
+                                                                     </div>
+                                                                     </a>
+                                                                     </li>
+                                                                    
+                                                                   
+                                                                 ';
+                                                                 $n=$n+1;
+                                                             }
+                                                        
+                                                    }
+                                                    else{
+                                                        echo "<b>No houses</b>";   
+                                                             }   
 
                                                  ?>
                                                   </ul>
@@ -369,7 +350,7 @@
                             </div>
                         </div>
                       <!-- Comments section -->
-                        <div class="col-lg-12">
+                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header">
                                     <h4>Comments</h4>
@@ -382,43 +363,49 @@
                                 <textarea class="form-control" name='comment' cols='10' rows='5'><?php if(isset($error)){ echo $_POST['comment'];}?></textarea>
                                 </div>
                                 </div>
-
+                                <label >Attachment</label>
+                                <div class="form-group">
+                                        <div class="form-line">
+                                            <input type='file' onchange="readURL(this,<?php echo $id; ?>,<?php echo $owner_type; ?>);" class="form-control" />
+                                        </div>
+                                    </div>
                                 <input type='submit' name='send' value='Send' class="btn btn-primary ">
                             </form>
-                            <!-- displaying comments -->
+                            <!--  comments -->
                             <ul class="list-group list-group-flush card-body">
                               <?php 
                                                 
-                                                  $cmnt_id= $Hash->decrypt($_GET['id']);
-                                                  $typein=$rowin['Name'];
-                                                 $stmtc = $database->query("SELECT * FROM comments WHERE owner = '$cmnt_id' AND status!='deleted' AND type = '$typein' ");
+                                                 $cmnt_id= $Hash->decrypt($_GET['id']);
+                                                 $stmtc = $database->query("SELECT * FROM comments WHERE owner = '$cmnt_id' AND status ='1' AND owner_type = '1' ");
                                                  $nums=$database->num_rows($stmtc);
-                                                if ($nums != 0) {
-                                                    
-                                                    while ($rowcmnt = $database->fetch_array($stmtc)) {
+
+                                                 if ($nums != 0) {
+                                                      
+                                                      while ($rowcmnt = $database->fetch_array($stmtc)) {
+                                                      $usernm = $database->get_item('user','id' , $rowcmnt['user'],'username');
                                                       $valuecmnt['id']=$rowcmnt['id'];
-                                                      $usernm= $rowcmnt['user']; 
-                                                        echo '
+                                                      
+                                                      echo '
 
-                                                            <li class="list-group-item"><b>User:</b> '.$rowcmnt['user'].'<br/>
-                                                           <b>Comment:</b> '.$rowcmnt['comment'].'<br/>
-                                                           
-                                                          
-
-                                                            ';
-                                                            if ($user==$usernm) {
-                                                              echo ' <a href="editcomment.php?id='.$Hash->encrypt($valuecmnt['id']).'">Edit</a>';
-                                                            }
-                                                            echo ' </li>';
+                                                              <li class="list-group-item"><b>User:</b> '.$usernm.'<br/>
+                                                             <b>Comment:</b> '.$rowcmnt['comment'].'<br/>
+                                                             
                                                             
-                                                    }
-                                                    
-                                                }
-                                                else{
-                                                    
-                                                    echo "<b>No Comments</b>";
-                                                }
-                                               
+
+                                                              ';
+                                                              if ($user==$usernm) {
+                                                                echo ' <a href="editcomment?id='.$Hash->encrypt($valuecmnt['id']).'">Edit</a>';
+                                                              }
+                                                              echo ' </li>';
+                                                              
+                                                          }
+                                                          
+                                                      }
+                                                      else{
+                                                          
+                                                          echo "<b>No Comments</b>";
+                                                      }
+                                                 
                                                     
                                                  ?>
                                           </ul>
@@ -440,31 +427,34 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                          <div class="modal-body">
                             <form action='' method='post' name="form">
                                 <label >Plate Number</label>
-                                <div class="form-group">
-                                <div class="form-line">
-                                 <input type="text" id="plot_nber" class="form-control" name="plate_nber" value='<?php if(isset($error)){ echo $_POST['plate_nber'];}?>' required>
-                                </div>
-                                <div class="form-line">
-                                <label >Model</label>
-                                 <input type="text" id="model" class="form-control" name="model" value='<?php if(isset($error)){ echo $_POST['model'];}?>' required>
-                                </div>
-                                
-                                <div class="form-line">
-                                <label >Insurance</label>
-                                 <input type="text" id="insurance_camp" class="form-control" name="insurance_camp" value='<?php if(isset($error)){ echo $_POST['insurance_camp'];}?>' required>
-                                </div>
+                                  <div class="form-group">
+                                    <div class="form-line">
+                                      <input type="text" id="plot_nber" class="form-control" name="plate_nber" value='<?php if(isset($error)){ echo $_POST['plate_nber'];}?>' required>
+                                    </div>
+                                  </div>
 
-                                </div>
+                                <label >Model</label>
+                                  <div class="form-group">
+                                    <div class="form-line">
+                                      <input type="text" id="model" class="form-control" name="model" value='<?php if(isset($error)){ echo $_POST['model'];}?>' required>
+                                    </div>
+                                  </div>
+                               
+                                <label >Insurance</label>
+                                  <div class="form-group">
+                                    <div class="form-line">
+                                      <input type="text" id="insurance_camp" class="form-control" name="insurance_camp" value='<?php if(isset($error)){ echo $_POST['insurance_camp'];}?>' required>
+                                    </div>
+                                  </div>
 
                                 <input type='submit' name='savec' value='Save' class="btn btn-primary ">
                             </form>
-                            </div>
+                          </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                
                             </div>
                         </div>
                     </div>
@@ -479,56 +469,27 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                          <div class="modal-body">
                             <form action='' method='post' name="form">
                                 <label >Type of House</label>
-                                <div class="form-group">
-                                <div class="form-line">
-                                 <input type="text" id="type" class="form-control" name="type" value='<?php if(isset($error)){ echo $_POST['type'];}?>' required>
-                                </div>
-                                <div class="form-line">
-                                <label >Province</label>
-                                 <input type="text" id="province" class="form-control" name="province" value='<?php if(isset($error)){ echo $_POST['province'];}?>' required>
-                                </div>
-                                <div class="form-line">
-                                <label >District</label>
-                                 <input type="text" id="district" class="form-control" name="district" value='<?php if(isset($error)){ echo $_POST['district'];}?>' required>
-                                </div>
-                                <div class="form-line">
-                                <label >Sector</label>
-                                 <input type="text" id="sector" class="form-control" name="sector" value='<?php if(isset($error)){ echo $_POST['sector'];}?>' required>
-                                </div>
-                                <div class="form-line">
-                                <label >Cell</label>
-                                 <input type="text" id="cell" class="form-control" name="cell" value='<?php if(isset($error)){ echo $_POST['cell'];}?>' required>
-                                </div>
-                                <div class="form-line">
-                                <label >Plot Number</label>
-                                 <input type="text" id="plot_nber" class="form-control" name="plot_nber" value='<?php if(isset($error)){ echo $_POST['plot_nber'];}?>' required>
-                                </div>
-                                <label for="Name">Country</label>
-                                <div class="form-line">
-                                <select name="country">
-                               <?php 
-                                  $stmtcntry = $database->query("SELECT * FROM countries");
-                                   while ($rowcntry = $database->fetch_array($stmtcntry)) {
-                                    echo ' <option value='.$rowcntry['id'].'>'.$rowcntry['nicename'].'</option>';
-
-                                   }
-
-                                 ?>
-                                    
-                                </select>
-                                </div>
-
-                                </div>
-
+                                  <div class="form-group">
+                                    <div class="form-line">
+                                      <input type="text" id="type" class="form-control" name="type" value='<?php if(isset($error)){ echo $_POST['type'];}?>' required>
+                                    </div>
+                                  </div>
+                               
+                                <label >Location</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                          <input type="text" id="location" class="form-control" name="location" value='<?php if(isset($error)){ echo $_POST['location'];}?>' required>
+                                        </div>
+                                    </div>
+                       
                                 <input type='submit' name='saveh' value='Save' class="btn btn-primary ">
                             </form>
-                            </div>
+                          </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                
                             </div>
                         </div>
                     </div>

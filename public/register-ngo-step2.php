@@ -15,6 +15,17 @@ require_once '../web-config/database.php';
   }
  $id = $Hash->decrypt($_GET['id']);
  $id_hash = $_GET['id'];
+
+ function check_if($value){
+    $Hash = new Encryption();
+    $database = new mysqldatabase(DB_NAME);
+    if (isset($_GET['id'])) {
+        $id = $Hash->decrypt($_GET['id']);
+        $val = $database->get_item('institution_details','id',$id,$value);
+        return $val;
+    }
+    else return "";
+}
  ?>
 </head>
 <body>
@@ -82,7 +93,7 @@ label{
         text-align: center;
         }
 
-        #nav-tab ul li { display: inline;float: left;padding: 15px 10%;background:#272c33;border-right: 1px solid grey }
+        #nav-tab ul li { display: inline;float: left;padding: 15px 18%;background:#272c33;border-right: 1px solid grey }
         #nav-tab ul li a{
             color: #fff;
         }
@@ -90,7 +101,7 @@ label{
     </style>
     <?php require_once 'includes/left_nav.php'; ?>
 
-    <div id="right-panel" class="right-panel">
+    <div id="right-panel" class="right-panel">              
 
         <!-- Header-->
      <?php require_once 'includes/top_nav.php'; ?>
@@ -101,7 +112,6 @@ label{
                     <ul>
                         <li><a href="register-ngo?id=<?=$id_hash?>">Basic Info</a></li>
                         <li id="active"><a href="<?=$_SERVER['REQUEST_URI']?>">Additional Info</a></li>
-                        <li><a href="register-ngo-step3?id=<?=$id_hash?>">Add Cars</a></li>
                     </ul>
                 </div>
                 <div class="tab-content-body">
@@ -109,11 +119,11 @@ label{
                     <form action="save-additional.php" method="POST" enctype="multipart/form-data" id="form">
                   <div class="form-group">
                     <label for="name">Responsible Ministry</label>
-                    <input type="text" class="form-control" name="responsible_ministry"  placeholder="Responsible Ministry">
+                    <input type="text" class="form-control" name="responsible_ministry" value="<?=check_if('responsible_ministry');?>"  placeholder="Responsible Ministry">
                   </div>  
                   <div class="form-group">
-                    <label for="name">Animal Contribution</label>
-                    <input type="text" class="form-control" name="animal" id="animal" placeholder="Animal Contribution">
+                    <label for="name">Annual Contribution</label>
+                    <input type="text" class="form-control" name="animal" value="<?=check_if('animal_contribution');?>" id="animal" placeholder="Annual Contribution">
                   </div>  
                   <input type="hidden" name="id" value="<?=$id;?>">
                   <div class="form-group">
@@ -122,15 +132,15 @@ label{
                   </div>
                   <div class="form-group">
                     <label for="name">DeadLine to Pay</label>
-                    <input type="text" class="form-control" id="date" name="date" placeholder="eg: 01 - jan">
+                    <input type="text" class="form-control" id="date" value="<?=check_if('payment_date');?>" name="date" placeholder="eg: 01 - jan">
                   </div>
                   <div class="form-group">
                     <label for="name">Meeting and Participation</label>
-                    <textarea class="form-control"  name="meeting" placeholder="Meeting and Participation"></textarea> 
+                    <textarea class="form-control"  name="meeting"  value="<?=check_if('meeting');?>" placeholder="Meeting and Participation"></textarea>
                   </div>
                   <div class="form-group">
                     <label for="name">Current Benefits</label>
-                    <input type="text" class="form-control" name="benefits" placeholder="Current benefits">
+                    <input type="text" class="form-control" name="benefits" value="<?=check_if('benefits');?>" placeholder="Current benefits">
                   </div>
   
                   <div class="pull-right">
@@ -163,10 +173,6 @@ label{
         
         responsible_ministry: "required",
         animal: "required",
-        date: "required",
-        meeting: "required",
-        contact_name: "required",
-        benefits: "required",
       },
       submitHandler: function(form) {
         form.submit();

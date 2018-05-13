@@ -10,17 +10,22 @@
 <body>
     <?php 
         $car_id= $Hash->decrypt($_GET['id']);
-        $stmtc = $database->query("SELECT * FROM cars WHERE id = '$car_id' AND status!='deleted' ");
+        $stmtc = $database->query("SELECT * FROM cars WHERE id = '$car_id' AND status = '1' ");
         $rowi = $database->fetch_array($stmtc);
+        if ($rowi['owner_type']== 1) {
+               $display= "display";
+            }
+            elseif ($rowi['owner_type']== 2) {
+               $display= "displayperson";
+            }    
         // deleting a car
         if(isset($_POST['del'])){
                         
-            $stmts = $database->query("UPDATE cars SET status = 'deleted' WHERE id = '$car_id'") ;
-               $valued['id']=$rowi['owner'];
-                header('Location: display.php?id='.$Hash->encrypt($valued['id']).'');
-            }
-            
-               
+            $stmts = $database->query("UPDATE cars SET status = '0' WHERE id = '$car_id'") ;
+            $valued['id']=$rowi['owner'];
+            header('Location: '.$display.'?id='.$Hash->encrypt($valued['id']).'');
+        }
+           
      ?>
     <!-- Left Panel -->
       <?php require_once 'includes/left_nav.php'; ?>
@@ -72,13 +77,13 @@
                                 <ul class="list-group list-group-flush">
                                   <?php
                                     $valuei['id']=$rowi['id'];
-                                     $values['id']=$rowi['owner'];
+                                    $values['id']=$rowi['owner'];
                                 
                                         echo '
                        
                                             <li class="list-group-item active bg-cyan">
-                                            <a href="editcar.php?id='.$Hash->encrypt($valuei['id']).'"  style="color:white;">Edit</a>
-                                            <a href="display.php?id='.$Hash->encrypt($values['id']).'"  style="color:white;" class="pull-right">Back to institution</a>
+                                            <a href="editcar?id='.$Hash->encrypt($valuei['id']).'"  style="color:white;">Edit</a>
+                                            <a href="'.$display.'?id='.$Hash->encrypt($values['id']).'"  style="color:white;" class="pull-right">Back </a>
                                             </li>
                                             <li class="list-group-item"><b>Plate Number:</b> '.$rowi['plate_nber'].'</li>
                                             <li class="list-group-item"><b>Model:</b> '.$rowi['model'].'</li>
@@ -94,7 +99,7 @@
                                     
                                  ?>
                                   </ul>
-                                  </section>
+                            </section>
                         </aside>
                     </div>
                     <!-- displaying houses -->

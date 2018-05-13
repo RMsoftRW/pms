@@ -15,7 +15,17 @@ require_once '../web-config/database.php';
     }
     $id = $Hash->decrypt($_GET['id']);
     $id_hash = $_GET['id'];
-    ?>
+
+function check_if($value){
+    $Hash = new Encryption();
+    $database = new mysqldatabase(DB_NAME);
+    if (isset($_GET['id'])) {
+    $id = $Hash->decrypt($_GET['id']);
+    $val = $database->get_item('add_info_amb','id_ambassador',$id,$value);
+    return $val;
+    }
+    else return "";
+    }  ?>
 </head>
 <body>
 <style type="text/css">
@@ -82,7 +92,7 @@ require_once '../web-config/database.php';
         text-align: center;
     }
 
-    #nav-tab ul li { display: inline;float: left;padding: 15px 10%;background:#272c33;border-right: 1px solid grey }
+    #nav-tab ul li { display: inline;float: left;padding: 15px 16%;background:#272c33;border-right: 1px solid grey }
     #nav-tab ul li a{
         color: #fff;
     }
@@ -104,31 +114,24 @@ require_once '../web-config/database.php';
                     </ul>
                 </div>
                 <div class="tab-content-body">
-                    <legend>Registration Form - Step II</legend>
-                    <form action="save-ambassadors.php" method="POST"  id="form">
+                    <legend>Registration Form- Step II (<?=$database->get_item('diplomats','id',$id,'given_names');?>)</legend>
+                    <form action="save-ambassadors" method="POST"  id="form">
+                        <input type="hidden" name="ambass" value="<?=check_if('add_info_amb','id_ambassador',$id,'id')?>">
                         <div class="form-group">
                             <label for="name">Request Date</label>
-                            <input type="date" class="form-control" name="request-d" id="request-d" placeholder="Request Date">
+                            <input type="date" class="form-control" name="request-d" value="<?=check_if("request_date")?>" id="request-d" placeholder="Request Date">
                         </div>
                         <div class="form-group">
                             <label for="name">Date of Arrival</label>
-                            <input type="date" class="form-control" name="arrival" id="arrival" placeholder="Date of Arrival">
+                            <input type="date" class="form-control" name="arrival" value="<?=check_if("arrival")?>" id="arrival" placeholder="Date of Arrival">
                         </div>
                         <div class="form-group">
                             <label for="name">Departure date</label>
-                            <input type="date" class="form-control" id="departure" name="departure" placeholder="Departure date">
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Embassy</label>
-                            <select class="form-control" id="country" name="embassy">
-                                <?php $st2 = $database->query("SELECT * FROM institution_details WHERE id_institution=2");
-                                foreach ($st2 as $key => $value) {?>
-                                    <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
-                            </select>
+                            <input type="date" class="form-control" id="departure" value="<?=check_if("departure")?>" name="departure" placeholder="Departure date">
                         </div>
                         <div class="form-group">
                             <label for="name">Date of presentation of credentials</label>
-                            <input type="date" class="form-control" id="cred" name="cred" placeholder="Date of presentation of credentials">
+                            <input type="date" class="form-control" id="cred" name="cred" value="<?=check_if("presentation_date")?>" placeholder="Date of presentation of credentials">
                         </div>
                         <input type="hidden" name="ambassador" value="<?=$id_hash;?>">
                         <div class="pull-right">

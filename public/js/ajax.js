@@ -1,5 +1,7 @@
 //<!-- ******** ajax.js ******** -->
-
+function _(el){
+    return document.getElementById(el);
+}
 function ajaxObj( meth, url ) {
 	var x = new XMLHttpRequest();
 	x.open( meth, url, true );

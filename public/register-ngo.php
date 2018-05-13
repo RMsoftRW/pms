@@ -91,7 +91,7 @@ label{
         text-align: center;
         }
 
-        #nav-tab ul li { display: inline;float: left;padding: 15px 10%;background:#272c33;border-right: 1px solid grey }
+        #nav-tab ul li { display: inline;float: left;padding: 15px 18%;background:#272c33;border-right: 1px solid grey }
         #nav-tab ul li a{
             color: #fff;
         }
@@ -110,10 +110,9 @@ label{
                     <ul>
                         <li id="active"><a href="<?=$_SERVER['REQUEST_URI']?>">Basic Info</a></li>
                          <?php if (isset($_GET['id'])) { $id =$_GET['id'];?> 
-                        <li><a href="register-ngo-step2?id=<?=$id?>">Additional Info</a></li><li><a href="register-ngo-step3?id=<?=$id?>">Add Cars</a></li>
+                        <li><a href="register-ngo-step2?id=<?=$id?>">Additional Info</a></li>
                         <?php } else{?>
                         <li><a href="register-ngo-step2">Additional Info</a></li>
-                        <li><a href="register-ngo-step3">Add Cars</a></li>
                         <?php } ?>
                     </ul>
                 </div>
@@ -121,15 +120,15 @@ label{
                     <legend>Registration Form  for NGO</legend>
                     <form action="save-ngo.php" method="POST" id="form">
                   <div class="form-group">
-                    <label for="name">NGO Name</label>
+                    <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter Embassy Name" minlength="4" value="<?=check_if('name');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">NGO Phone</label>
-                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Embassy Phone" minlength="10" value="<?=check_if('telephone');?>">
+                    <label for="name">Phone</label>
+                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Embassy Phone" minlength="10" maxlength="13" value="<?=check_if('telephone');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">NGO Email</label>
+                    <label for="name">Email</label>
                     <input type="text" class="form-control" name="email" id="email" placeholder="Enter Embassy Phone" value="<?=check_if('email');?>">
                   </div>
                   <input type="hidden" name="institution" value="4">
@@ -177,30 +176,21 @@ label{
 <script type="text/javascript">
     $("#country option[value=178]").prop('selected', true);
     $(function() {
+    $.validator.addMethod("phoneCheck",function (value) {
+        return /^\+?\d{10,13}/.test(value) || value ==="";
+    },' Enter a valid Phone number');
     $("#form").validate({
       rules: {
-        
         name: "required",
-        phone: "required",
         location: "required",
-        contact_phone: "required",
-        contact_name: "required",
+        phone    :{ phoneCheck: true,required:false},
+        contact_phone :{ phoneCheck: true},
         email: {
           required: true,
           email: true
         }
         
       },
-      
-      messages: {
-        firstname: "Please enter your firstname",
-        lastname: "Please enter your lastname",
-        password: {
-          required: "Please provide a password",
-          minlength: "Your password must be at least 5 characters long"
-        },
-        email: "Please enter a valid email address"
-      }, 
       submitHandler: function(form) {
         form.submit();
       }

@@ -9,21 +9,23 @@
 </head>
 <body>
             <?php 
-            $id=$Hash->decrypt($_GET['id']);
+                $id=$Hash->decrypt($_GET['id']);
                 $stmt = $database->query("SELECT *  FROM cars WHERE id = '$id'");
                 $row = $database->fetch_array($stmt); 
-             ?>
-              <?php 
+
                     if(isset($_POST['submit'])){
                         $plate_nber = $_POST['plate_nber'];
                         $model = $_POST['model'];
                         $insurance_camp = $_POST['insurance_camp'];
+                         $plt = $database->escape_value($plate_nber);
+                         $mdl = $database->escape_value($model);
+                         $insc = $database->escape_value($insurance_camp);
                         
-           $stmts = $database->query("UPDATE cars SET plate_nber = '$plate_nber', model = '$model', 
-            insurance_camp = '$insurance_camp' WHERE id = '$id'") ;
-                $valuei['id']=$row['id'];
-                header('Location: cars.php?id='.$Hash->encrypt($valuei['id']).'');
-            }
+                        $stmts = $database->query("UPDATE cars SET plate_nber = '$plt', model = '$mdl', 
+                        insurance_camp = '$insc' WHERE id = '$id'") ;
+                        $valuei['id']=$row['id'];
+                        header('Location: cars?id='.$Hash->encrypt($valuei['id']).'');
+                    }
             
             
                  ?>
@@ -66,44 +68,38 @@
                             <div class="card-header">
                                 <strong class="card-title">EDIT Car</strong>
                             </div>
-                            <div class="card-body">
+                        <div class="card-body">
                              <form action='' method='post' name="form">
                                 <label >Plate Number</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="plate_nber" 
-                            class="form-control" name="plate_nber" value='<?php echo $row['plate_nber'];?>'>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="plate_nber" 
+                                            class="form-control" name="plate_nber" value='<?php echo $row['plate_nber'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
+
                                 <label>Model</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="model" 
-                            class="form-control" name="model" value='<?php echo $row['model'];?>'>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="model" 
+                                            class="form-control" name="model" value='<?php echo $row['model'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
+
                                 <label>Insurance</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="insurance_camp" 
-                            class="form-control" name="insurance_camp" value='<?php echo $row['insurance_camp'];?>'>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="insurance_camp" 
+                                            class="form-control" name="insurance_camp" value='<?php echo $row['insurance_camp'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
-                               
 
                                 <input type='submit' name='submit' value='Update' class="btn btn-primary ">
                                 
                             </form>
-                            </div>
                         </div>
                     </div>
-
-           
-
-
+                </div>
 
         </div> <!-- .content -->
     </div><!-- /#right-panel -->

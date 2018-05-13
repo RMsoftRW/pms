@@ -9,23 +9,18 @@
 </head>
 <body>
         <?php 
-                 $id=$Hash->decrypt($_GET['id']);
+                $id=$Hash->decrypt($_GET['id']);
                 $stmt = $database->query("SELECT *  FROM institution_details WHERE id = '$id'");
-                 $row = $database->fetch_array($stmt);
-
-               
-             ?>
-             <?php 
+                $row = $database->fetch_array($stmt);
+ 
                     if(isset($_POST['submit'])){
                         $name = $_POST['name'];
                         $telephone = $_POST['telephone'];
-                        $contact_person = $_POST['contact_person'];
-                        $start_date = $_POST['start_date'];
-                        $end_date = $_POST['end_date'];
-            $stmts = $database->query("UPDATE institution_details SET name = '$name', telephone = '$telephone', contact_person = '$contact_person', start_date = '$start_date', end_date = '$end_date' WHERE id = '$id'") ;
+                        $contact_person = $_POST['contact_person']
+            $stmts = $database->query("UPDATE institution_details SET name = '$name', telephone = '$telephone', contact_person = '$contact_person' WHERE id = '$id'") ;
                 
                  $value['id']= $row['id'];
-                header('Location: display.php?id='.$Hash->encrypt($value['id']).'');
+                header('Location: display?id='.$Hash->encrypt($value['id']).'');
             }
             
                  ?>
@@ -68,55 +63,39 @@
                             <div class="card-header">
                                 <strong class="card-title">EDIT Basic Information</strong>
                             </div>
-                            <div class="card-body">
+                        <div class="card-body">
                            <form action='' method='post' name="form">
                                 <label for="name">Name</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="name" 
-                            class="form-control" name="name" value='<?php echo $row['name'];?>'>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="name" 
+                                            class="form-control" name="name" value='<?php echo $row['name'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
 
-                                    
-                                
                                 <label for="name">Telephone</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="telephone" 
-                            class="form-control" name="telephone" value='<?php echo $row['telephone'];?>'>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="telephone" 
+                                            class="form-control" name="telephone" value='<?php echo $row['telephone'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
-                                <label for="name">Contact Person</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="contact_person" 
-                            class="form-control" name="contact_person" value='<?php echo $row['contact_person'];?>'>
-                                    </div>
-                                    
-                                </div>
-                                
-                                <label for="name">Start Date</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="start_date" 
-                            class="form-control" name="start_date" value='<?php echo $row['start_date'];?>'>
-                                    </div>
-                                    
-                                </div>
-                                <label for="name">End Date</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="end_date" 
-                            class="form-control" name="end_date" value='<?php echo $row['end_date'];?>'>
-                                    </div>
-                                    
-                                </div>
-                               </div>
 
-                                <input type='submit' name='submit' value='Update' class="btn btn-primary ">
+                                <label for="name">Contact Person</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="contact_person" 
+                                            class="form-control" name="contact_person" value='<?php echo $row['contact_person'];?>'>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                             <input type='submit' name='submit' value='Update' class="btn btn-primary ">
+                                         </div>
+                                    </div>
+                            </div>
+
+                               
                             </form>
                             </div>
                         </div>

@@ -88,7 +88,7 @@ label{
         text-align: center;
         }
 
-        #nav-tab ul li { display: inline;float: left;padding: 15px 20%;background:#272c33;border-right: 1px solid grey }
+        #nav-tab ul li { display: inline;float: left;padding: 15px 44%;background:#272c33;border-right: 1px solid grey }
         #nav-tab ul li a{
             color: #fff;
         }
@@ -106,26 +106,21 @@ label{
                 <div id="nav-tab">
                     <ul>
                         <li id="active"><a href="<?=$_SERVER['REQUEST_URI']?>">Basic Info</a></li>
-                        <?php if (isset($_GET['id'])) { $id =$_GET['id'];?>
-                          <li><a href="register-foreign-embassy-step2?id=<?=$id?>">Add Cars</a></li>
-                        <?php } else{?>
-                        <li><a href="register-foreign-embassy-step2">Add Cars</a></li>
-                        <?php } ?>
                     </ul>
                 </div>
                 <div class="tab-content-body">
                     <legend>Registration Form  for Foreign Embassies</legend>
                     <form action="save.php" method="POST" id="form">
                   <div class="form-group">
-                    <label for="name">Embassy Name</label>
+                    <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter Embassy Name" value="<?=check_if('name');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">Embassy Phone</label>
+                    <label for="name">Phone</label>
                     <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Embassy Phone" value="<?=check_if('telephone');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">Embassy Email</label>
+                    <label for="name">Email</label>
                     <input type="email" class="form-control" name="email" id="email" placeholder="Enter Embassy Phone" value="<?=check_if('email');?>">
                   </div>
                   <input type="hidden" name="institution" value="2">
@@ -151,7 +146,7 @@ label{
                     <input type="text" name="location" class="form-control" id="location" placeholder="Full Address" value="<?=check_if('location');?>">  
                   </div>
                   <div class="form-group">
-                    <label for="country">Country Location</label>
+                    <label for="country">Country Residence</label>
                         <select class="form-control" id="country2" name="country_loc">
                     <?php $st2 = $database->query("SELECT * FROM countries"); 
                     foreach ($st2 as $key => $value) {?>
@@ -183,33 +178,24 @@ label{
 <script type="text/javascript">
     $("#country2 option[value=178]").prop('selected', true);
     $(function() {
-    $("#form").validate({
-      rules: {
-        
-        name: "required",
-        phone: "required",
-        location: "required",
-        contact_phone: "required",
-        contact_name: "required",
-        email: {
-          required: true,
-          email: true
-        }
-        
-      },
-      
-      messages: {
-        firstname: "Please enter your firstname",
-        lastname: "Please enter your lastname",
-        password: {
-          required: "Please provide a password",
-          minlength: "Your password must be at least 5 characters long"
-        },
-        email: "Please enter a valid email address"
-      }, 
-      submitHandler: function(form) {
-        form.submit();
-      }
-    });
+        $.validator.addMethod("phoneCheck",function (value) {
+            return /^\+?\d{10,13}$/.test(value) || value ==="";
+        },' Enter a valid Phone number');
+        $("#form").validate({
+            rules: {
+                name: "required",
+                location: "required",
+                phone    :{ phoneCheck: true,required:false},
+                contact_phone :{ phoneCheck: true},
+                email: {
+                    required: true,
+                    email: true
+                }
+
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
     });
 </script>

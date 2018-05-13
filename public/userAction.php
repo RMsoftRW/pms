@@ -1,6 +1,7 @@
 <?php
 require_once("../web-config/config.php");
 require_once ("../web-config/database.php");
+include ("includes/encryption.php");
 
 if(isset($_POST["add"])){
 
@@ -65,6 +66,7 @@ if(isset($_POST["username_update"])){
 
     }}
 if (isset($_POST["change"])){
+
     $id=$_POST["id"];
     $p=$_POST["p"];
     $pnew=$_POST["p1"];
@@ -133,6 +135,73 @@ if(isset($_POST['delete'])){
 
 
 
+    }
+}
+
+if (isset($_POST["level"])){
+    $level=$database->escape_value(trim($_POST["level"]));
+    $keyword=strtolower($level);
+    if($keyword==""){
+
+        $st=$database->query("SELECT * FROM user WHERE status = 'active'");
+    }
+    else{
+        $st =$database->query("SELECT * from user where lower (`fname`) LIKE '$keyword%' OR lower (`lname`) LIKE '$keyword%' OR lower (`mname`) LIKE '$keyword%' OR lower (`email`) LIKE '$keyword%' AND status='active'");
+
+    }
+    $html="";
+    $count=1;
+
+    while ($row=$database->fetch_array($st)) {
+        $fname=$row["fname"];
+        $lname=$row["lname"];
+        $mname=$row["mname"];
+        $email=$row["email"];
+        $u=$row['username'];
+        $level=$row["level"];
+        $status=$row["active"];
+        $avatar=$row["avatar"];
+        $inst=$row['id_institution'];
+        $id=$row["id"];
+        $Hash=new Encryption();
+        $id_hash=$Hash->encrypt($id);
+        $show="<tr><td><span class='custom-checkbox'><input type='checkbox' id='.$id.' name='options[]' value=$id><label for='checkbox'></label></span></td>";
+        $show.=" <td>$count</td>";
+        if (file_exists("../uploads/user/".$u."/".$avatar)){
+            $src="../uploads/user/".$u."/".$avatar;
+        }
+        else{
+            $src="images/default_profile.png";
+        }
+        $show.="<td><img src='$src' class='avatar' alt='Avatar'> $fname $mname $lname</td>
+                <td>$email</td>
+                <td>$u</td>";
+        if($status==0){
+            $show.="<td><span class='status badge badge-danger'>Inactive</td>";}
+        else if($status==1) {
+            $show.="<td><span class='status badge badge-primary'>Active</td>";
+        }
+
+        if($row['id_institution']==0){
+            $show.= "<td>MOFA</td>"; }
+        else{
+            $i=$database->get_item('institution_details','id',$row['id_institution'],'name');
+            $show.="<td>$i</td>";
+        }
+        $i=$database->get_item("level","id",$row['level'],"name");
+        $show.="<td>$i</td>
+        <td><a href='edituser?id=$id_hash' class='edit'><i class='material-icons' data-toggle='tooltip' title='Edit'>&#xE254;</i></a>
+                                <a href='#deleteuserModal' class='delete' data-toggle='modal'><i class='material-icons' data-toggle='tooltip' title='Delete'>&#xE872;</i></a>
+                            </td>
+        </tr>";
+        $count++;
+        $html.=$show;
+    }
+    if($html==""){
+        echo "<tr>No user found</tr>";
+    }
+    else {
+        echo $html;
     }
 }
 

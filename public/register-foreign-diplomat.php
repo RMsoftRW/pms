@@ -274,10 +274,9 @@ require_once '../web-config/database.php';
     $("#country option[value=178]").prop('selected', true);
     $(function() {
 
-        $.validator.addMethod('phoneValid', function (value) {
-            return /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test(value);
-        }, 'Enter a valid Phone number');
-
+        $.validator.addMethod("phoneCheck",function (value) {
+            return /^\+?\d{10,13}$/.test(value) || value ==="";
+        },' Enter a valid Phone number');
 
         $("#form").validate({
             rules: {

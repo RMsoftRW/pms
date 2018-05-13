@@ -16,18 +16,30 @@
               <?php 
                     if(isset($_POST['submit'])){
                         $comment = $_POST['comment'];
-                       
+                       $cmt = $database->escape_value($comment);
                         
-           $stmts = $database->query("UPDATE comments SET comment = '$comment' WHERE id = '$id'") ;
+           $stmts = $database->query("UPDATE comments SET comment = '$cmt' WHERE id = '$id'") ;
                 $valuecmnt['id']=$rowcmnt['owner'];
-                header('Location: display.php?id='.$Hash->encrypt($valuecmnt['id']).'');
+                if ($rowcmnt['owner_type']== 1) {
+                     header('Location: display?id='.$Hash->encrypt($valuecmnt['id']).'');
+                }
+                elseif ($rowcmnt['owner_type']== 2) {
+                     header('Location: displayperson?id='.$Hash->encrypt($valuecmnt['id']).'');
+                }
+               
             }
             // deleting comment
             if(isset($_POST['del'])){
                         
-            $stmts = $database->query("UPDATE comments SET status = 'deleted' WHERE id = '$id'") ;
+            $stmts = $database->query("UPDATE comments SET status = '0' WHERE id = '$id'") ;
                $valued['id']=$rowcmnt['owner'];
-                header('Location: display.php?id='.$Hash->encrypt($valued['id']).'');
+               if ($rowcmnt['owner_type']== 1) {
+                     header('Location: display?id='.$Hash->encrypt($valued['id']).'');
+                }
+                elseif ($rowcmnt['owner_type']== 2) {
+                     header('Location: displayperson?id='.$Hash->encrypt($valued['id']).'');
+                }
+               
             }
             
             

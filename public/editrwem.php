@@ -10,23 +10,19 @@
 <body>
         <?php 
                  $id=$Hash->decrypt($_GET['id']);
-                $stmt = $database->query("SELECT *  FROM institution_details WHERE id = '$id'");
+                 $stmt = $database->query("SELECT *  FROM institution_details WHERE id = '$id'");
                  $row = $database->fetch_array($stmt);
                  $cnt=$row['country'];
-                  $cntl=$row['country_loc']; 
+                 $cntl=$row['country_loc']; 
                  $stmcnt = $database->query("SELECT *  FROM countries WHERE id = '$cnt'");
                  $rowcnt = $database->fetch_array($stmcnt);
                  $stmcntl = $database->query("SELECT *  FROM countries WHERE id = '$cntl'");
                  $rowcntl = $database->fetch_array($stmcntl);  
-               
-             ?>
-             <?php 
+            
                     if(isset($_POST['submit'])){
                         $name = $_POST['name'];
                         $telephone = $_POST['telephone'];
                         $contact_person = $_POST['contact_person'];
-                        $start_date = $_POST['start_date'];
-                        $end_date = $_POST['end_date'];
                         $email = $_POST['email'];
                         $contact_phone = $_POST['contact_phone'];
                         $location = $_POST['location'];
@@ -36,8 +32,6 @@
                 name = '$name', 
                 telephone = '$telephone', 
                 contact_person = '$contact_person', 
-                start_date = '$start_date', 
-                end_date = '$end_date',
                 email = '$email',
                 contact_phone = '$contact_phone',
                 country = '$country', 
@@ -45,7 +39,7 @@
                 WHERE id = '$id'") ;
                 
                  $value['id']= $row['id'];
-                header('Location: display.php?id='.$Hash->encrypt($value['id']).'');
+                header('Location: display?id='.$Hash->encrypt($value['id']).'');
             }
             
                  ?>
@@ -87,101 +81,89 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">EDIT Basic Information</strong>
-                             <?php  
+                                  <?php  
                                      $values['id']= $row['id'];
-                                     echo '<a href="display.php?id='.$Hash->encrypt($values['id']).'"  style="color:black;" class="pull-right">Back to institution</a>';
-                                     ?>
+                                     echo '<a href="display?id='.$Hash->encrypt($values['id']).'"  style="color:black;" class="pull-right">Back to institution</a>';
+                                   ?>
                             </div>
-                            <div class="card-body">
+                        <div class="card-body">
                            <form action='' method='post' name="form">
                                 <label for="name">Name</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="name" 
-                            class="form-control" name="name" value='<?php echo $row['name'];?>'>
+                                    <div class="form-group">
+                                      <div class="form-line">
+                                        <input type="text" id="name" 
+                                        class="form-control" name="name" value='<?php echo $row['name'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
-                                <label for="name">Email</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="email" 
-                            class="form-control" name="email" value='<?php echo $row['email'];?>'>
-                                    </div>
-                                    
-                                </div>
-                                <label for="name">Telephone</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="telephone" 
-                            class="form-control" name="telephone" value='<?php echo $row['telephone'];?>'>
-                                    </div>
-                                    
-                                </div>
-                                <label for="name">Contact Person</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="contact_person" 
-                            class="form-control" name="contact_person" value='<?php echo $row['contact_person'];?>'>
-                                    </div>
-                                    
-                                </div>
-                                <label for="name">Conatct Phone</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="contact_phone" 
-                            class="form-control" name="contact_phone" value='<?php echo $row['contact_phone'];?>'>
-                                    </div>
-                                    
-                                </div>
-                                <label for="name">Country</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <select name="country">
-                                   <?php 
-                                  $stmtcntry = $database->query("SELECT * FROM countries");
-                                   echo'<option value='.$rowcnt['id'].'>'.$rowcnt['nicename'].'</option>';
-                                   while ($rowcntry = $database->fetch_array($stmtcntry)) {
-                                    echo ' <option value='.$rowcntry['id'].'>'.$rowcntry['nicename'].'</option>';
 
-                                   }
-                                   ?>
-                            </select>
+                                <label for="name">Email</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="email" 
+                                            class="form-control" name="email" value='<?php echo $row['email'];?>'>
+                                        </div>
                                     </div>
-                                    
-                                </div>
+
+                                <label for="name">Telephone</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="telephone" 
+                                            class="form-control" name="telephone" value='<?php echo $row['telephone'];?>'>
+                                        </div>
+                                    </div>
+
+                                <label for="name">Contact Person</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="contact_person" 
+                                            class="form-control" name="contact_person" value='<?php echo $row['contact_person'];?>'>
+                                        </div>
+                                    </div>
+
+                                <label for="name">Conatct Phone</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="contact_phone" 
+                                            class="form-control" name="contact_phone" value='<?php echo $row['contact_phone'];?>'>
+                                        </div>
+                                    </div>
+
+                                <label for="name">Country</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <select name="country">
+                                                   <?php 
+                                                      $stmtcntry = $database->query("SELECT * FROM countries");
+                                                      echo'<option value='.$rowcnt['id'].'>'.$rowcnt['nicename'].'</option>';
+                                                      while ($rowcntry = $database->fetch_array($stmtcntry)) {
+                                                      echo ' <option value='.$rowcntry['id'].'>'.$rowcntry['nicename'].'</option>';
+
+                                                       }
+                                                   ?>
+                                            </select>
+                                         </div>
+                                    </div>
+
                                 <label for="name">Location</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="location" 
-                            class="form-control" name="location" value='<?php echo $row['location'];?>'>
-                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="location" 
+                                            class="form-control" name="location" value='<?php echo $row['location'];?>'>
+                                        </div>
                                     
-                                </div>
+                                    </div>
                                 
-                                <label for="name">Start Date</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="start_date" 
-                            class="form-control" name="start_date" value='<?php echo $row['start_date'];?>'>
+                                    <div class="form-group">
+                                            <div class="form-line">
+                                              <input type='submit' name='submit' value='Update' class="btn btn-primary ">
+                                            </div>
                                     </div>
-                                    
-                                </div>
-                                <label for="name">End Date</label>
-                                <div class="form-group">
-                                    <div class="form-line">
-                            <input type="text" id="end_date" 
-                            class="form-control" name="end_date" value='<?php echo $row['end_date'];?>'>
-                                    </div>
-                                    
-                                </div>
                                </div>
 
-                                <input type='submit' name='submit' value='Update' class="btn btn-primary ">
                             </form>
-                            </div>
                         </div>
                     </div>
+                </div>
 
         </div> <!-- .content -->
     </div><!-- /#right-panel -->

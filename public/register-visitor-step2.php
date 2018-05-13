@@ -15,6 +15,18 @@ require_once '../web-config/database.php';
     }
     $id = $Hash->decrypt($_GET['id']);
     $id_hash = $_GET['id'];
+
+ function check_if($value){
+        $Hash = new Encryption();
+        $database = new mysqldatabase(DB_NAME);
+        if (isset($_GET['id'])) {
+            $id = $Hash->decrypt($_GET['id']);
+            $id = $database->get_item("visit",'visitor',$id,'id');
+            $val = $database->get_item('visit','id',$id,$value);
+            return $val;
+        }
+        else return "";
+ }
     ?>
 </head>
 <body>
@@ -112,34 +124,36 @@ require_once '../web-config/database.php';
                 <div class="tab-content-body">
                     <legend>Registration Form - Step II</legend>
                     <form action="save-visitors.php" method="POST"  id="form">
+                        <input type="hidden" name="visit" value="<?=check_if("visit",'visitor',$id,'id')?>">
                         <div class="form-group">
                             <label for="name">Reason For Visiting</label>
-                            <input type="text" class="form-control" name="reason"  placeholder="Reason For Visiting">
+                            <input type="text" class="form-control" name="reason" value="<?=check_if("reason")?>"  placeholder="Reason For Visiting">
                         </div>
                         <div class="form-group">
                             <label for="name">Proposed Person/instutition to visit</label>
-                            <input type="text" class="form-control" name="host_person" id="animal" placeholder="Proposed Person/instutition to visit">
+                            <input type="text" class="form-control" value="<?=check_if("host_person")?>" name="host_person" id="animal" placeholder="Proposed Person/instutition to visit">
                         </div>
                         <input type="hidden" name="visitor" value="<?=$id;?>">
                         <div class="form-group">
                             <label for="name">Date of Arrival</label>
-                            <input type="date" class="form-control" name="arrival" id="arrival" placeholder="Date of Arrival">
+                            <input type="date" class="form-control" value="<?=check_if("arrival")?>" name="arrival" id="arrival" placeholder="Date of Arrival">
                         </div>
                         <div class="form-group">
                             <label for="name">Departure date</label>
-                            <input type="date" class="form-control" id="departure" name="departure" placeholder="Departure date">
+                            <input type="date" class="form-control" value="<?=check_if("departure")?>" id="departure" name="departure" placeholder="Departure date">
                         </div>
                         <div class="form-group">
                             <label for="name">Embassy</label>
                             <select class="form-control" id="country" name="embassy">
+                                <option id="option"  value="0">No Embassy</option>
                                 <?php $st2 = $database->query("SELECT * FROM institution_details WHERE id_institution=2");
                                 foreach ($st2 as $key => $value) {?>
-                                    <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                                    <option id="option" <?=check_if("id_embassy")===$value['id']?" selected":""?>  value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="name">Protocol</label>
-                            <input type="text" class="form-control" name="protocol" placeholder="Protocol">
+                            <input type="text" class="form-control" value="<?=check_if("protocol")?>" name="protocol" placeholder="Protocol">
                         </div>
 
                         <div class="pull-right">

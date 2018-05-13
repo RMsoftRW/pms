@@ -4,12 +4,13 @@ require_once '../web-config/database.php';
 require_once 'includes/encryption.php';
 
 $search = $_POST['search'];
+$id = $_POST['id'];
 if ($search!=="") {
 	
-$sql = "SELECT * FROM institution_details WHERE telephone LIKE '%$search%'
+$sql = "SELECT * FROM institution_details WHERE (telephone LIKE '%$search%'
    											 OR name  LIKE '%$search%'
    											 OR contact_person LIKE '%$search%'
-   											 OR comments LIKE '%$search%'";
+   											 OR comments LIKE '%$search%') AND id_institution=$id";
 $res = $database->query($sql);  											 
 
 while ($row = mysqli_fetch_assoc($res)) {?>

@@ -10,24 +10,24 @@
 <body>
     <?php 
         $house_id= $Hash->decrypt($_GET['id']);
-        $stmth = $database->query("SELECT * FROM houses WHERE id = '$house_id' AND status!='deleted' ");
+        $stmth = $database->query("SELECT * FROM houses WHERE id = '$house_id' AND status = '1' ");
         $rowh = $database->fetch_array($stmth);
-        $idh=$rowh['id_location'];
-        $stmtl = $database->query("SELECT * FROM Location WHERE id = '$idh' AND status!='deleted' ");
-        $rowl = $database->fetch_array($stmtl);
-        $country= $rowl['country'];
-        $stmtcnt = $database->query("SELECT * FROM countries WHERE id = '$country'");
-        $rowcnt = $database->fetch_array($stmtcnt);
-        // deleting a House
-       if(isset($_POST['del'])){
-                        
-            $stmts = $database->query("UPDATE houses SET status='deleted' WHERE  id = '$house_id'") ;
-                $stmtse = $database->query("UPDATE location SET status='deleted' WHERE  id = '$idh'") ;
-                $values['id']= $rowh['owner'];
-                header('Location: display.php?id='.$Hash->encrypt($values['id']).'');
+
+         if ($rowh['owner_type']== 1) {
+               $display= "display";
             }
-            
-               
+            elseif ($rowh['owner_type']== 2) {
+               $display= "displayperson";
+            }
+        // deleting a House
+        if(isset($_POST['del'])){
+                        
+                $stmts = $database->query("UPDATE houses SET status= '0' WHERE  id = '$house_id'") ;
+                $values['id']= $rowh['owner'];
+                header('Location: '.$display.'?id='.$Hash->encrypt($values['id']).'');
+            }
+           
+
      ?>
     <!-- Left Panel -->
       <?php require_once 'includes/left_nav.php'; ?>
@@ -84,16 +84,11 @@
                                         echo '
                        
                                                 <li class="list-group-item active bg-cyan">
-                                                    <a href="edithouse.php?id='.$Hash->encrypt($valueho['id']).'"  style="color:white;">Edit</a>
-                                                    <a href="display.php?id='.$Hash->encrypt($valueh['id']).'"  style="color:white;" class="pull-right">Back to institution</a>
+                                                    <a href="edithouse?id='.$Hash->encrypt($valueho['id']).'"  style="color:white;">Edit</a>
+                                                    <a href="'.$display.'?id='.$Hash->encrypt($valueh['id']).'"  style="color:white;" class="pull-right">Back</a>
                                                 </li>
                                                 <li class="list-group-item"><b>Type of House:</b> '.$rowh['type'].'</li>
-                                                <li class="list-group-item"><b>Province:</b> '.$rowl['province'].'</li>
-                                                <li class="list-group-item"><b>District:</b> '.$rowl['district'].'</li>
-                                                <li class="list-group-item"><b>Sector:</b> '.$rowl['sector'].'</li>
-                                                <li class="list-group-item"><b>Cell:</b> '.$rowl['cell'].'</li>
-                                                <li class="list-group-item"><b>Plot Number:</b> '.$rowl['plot_nber'].'</li>
-                                                <li class="list-group-item"><b>Country:</b> '.$rowcnt['nicename'].'</li>
+                                                <li class="list-group-item"><b>location:</b> '.$rowh['location'].'</li>
                                                 <li class="list-group-item">
                                                 <form action="" method="post" name="form" >
                                                 <input type="submit" clas="pull-right" name="del" value="Delete" class="btn btn-primary ">

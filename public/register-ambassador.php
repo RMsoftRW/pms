@@ -92,7 +92,7 @@ label{
         text-align: center;
         }
 
-        #nav-tab ul li { display: inline;float: left;padding: 15px 10%;background:#272c33;border-right: 1px solid grey }
+        #nav-tab ul li { display: inline;float: left;padding: 15px 16%;background:#272c33;border-right: 1px solid grey }
         #nav-tab ul li a{
             color: #fff;
         }
@@ -119,120 +119,126 @@ label{
                 </div>
                 <div class="tab-content-body">
                     <legend>Registration Form  for Ambassador</legend>
-                    <form action="save-ambassadors.php" method="POST" id="form">
+                    <form action="save-ambassadors" method="POST" id="form">
                         <?php if (isset($_GET['id'])){$id = $Hash->decrypt($_GET['id']);?>
                             <input type="hidden" name="update" value="<?=$id?>"><?php }?>
-                  <div class="form-group">
-                    <label for="name">Given Names<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" id="gname" name="given_name" placeholder="Enter Given Names" minlength="4" value="<?=check_if('given_names');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Family Names<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" name="family_names" id="family" placeholder="Enter Family Names" minlength="4" value="<?=check_if('family_names');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Other Names</label>
-                    <input type="text" class="form-control" name="other_names" id="other" placeholder="Enter Other Names" value="<?=check_if('other_names');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="gender">Gender<span class="required-mark">*</span></label>
-                    <div>
-                      <small id="small">Male</small>
-                      <input type="radio" name="gender" value="Male" checked="checked" id="gender"  style="margin-left: 20%">
-                    </div>
-                    <div>
-                        <small id="small">Female</small>
-                       <input type="radio" name="gender" value="Female" id="gender" style="margin-left: 18%">
-                    </div>
-
-                  </div>
-                  <input type="hidden" name="institution" value="4">
-                  <div class="form-group">
-                    <label for="contact_phone">Date of Birth<span class="required-mark">*</span></label>
-                    <input type="date" class="form-control" id="contact_phone" placeholder="Enter Date of Birth" name="dob" value="<?=check_if('dob');?>">
-                  </div>
-
-
-                  <div class="form-group">
-                    <label for="contact_name">Place of Birth<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" id="pob" placeholder="Enter Place Of Birth" name="pob" value="<?=check_if('pob');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="country">Nationality Of Birth<span class="required-mark">*</span></label>
-                        <select class="form-control" id="country" name="nob">
-                    <?php $st2 = $database->query("SELECT * FROM countries");
-                    foreach ($st2 as $key => $value) {?>
-                        <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
-                        </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="location"> Email<span class="required-mark">*</span></label>
-                    <input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<?=check_if('email');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Telephone<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" name="telephone" id="telephone" placeholder="telephone" minlength="10" value="<?=check_if('telephone');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Passport No<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" name="pass_no" id="pass" placeholder="Enter passport No"  value="<?=check_if('pass_no');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Nationality of Passport<span class="required-mark">*</span></label>
-                      <select class="form-control" id="country" name="nop">
-                          <?php $st2 = $database->query("SELECT * FROM countries");
-                          foreach ($st2 as $key => $value) {?>
-                              <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
-                      </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Date of Issue of Passport<span class="required-mark">*</span></label>
-                    <input type="date" class="form-control" name="doi" id="doi" placeholder="Date of Issue of Transport"  value="<?=check_if('doi');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Expiry Date<span class="required-mark">*</span></label>
-                    <input type="date" class="form-control" name="doe" id="doe" placeholder="Expiry date"  value="<?=check_if('doe');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Profession</label>
-                    <input type="text" class="form-control" name="profession" id="profession" placeholder="profession"  value="<?=check_if('profession');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Occupation</label>
-                    <input type="text" class="form-control" name="occupation" id="occupation" placeholder="occupation" value="<?=check_if('occupation');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Employer</label>
-                    <input type="text" class="form-control" name="employer" id="employer" placeholder="Eployer"  value="<?=check_if('employer');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Father's Name<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" name="father_name" id="fathern" placeholder="Father's Name" minlength="4" value="<?=check_if('father_name');?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Father's Nationality<span class="required-mark">*</span></label>
-                      <select class="form-control" id="country" name="father_nat">
-                          <?php $st2 = $database->query("SELECT * FROM countries");
-                          foreach ($st2 as $key => $value) {?>
-                              <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
-                      </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Mother's Names<span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" name="mother_name" id="fassmily" placeholder="Mother's Names" minlength="4" value="<?=check_if('mother_name');?>">
-                  </div>
                         <div class="form-group">
-                            <label for="name">Mother's Nationality<span class="required-mark">*</span></label>
-                            <select class="form-control" id="country" name="mother_nat">
+                            <label for="name">Nationality of Passport<span class="required-mark">*</span></label>
+                            <select class="form-control" id="country2" name="nop">
                                 <?php $st2 = $database->query("SELECT * FROM countries");
                                 foreach ($st2 as $key => $value) {?>
-                                    <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                                    <option id="option" <?=check_if("nop")===$value['id']?"  selected":""?> value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="name">Malital Status<span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" name="marital_status" id="mat" placeholder="Marital status" minlength="4" value="<?=check_if('marital_status');?>">
+                            <label for="name">High Commission</label>
+                            <input type="text" class="form-control" name="embassy" id="embassy" disabled>
                         </div>
+                        <div id="form-body"> <div class="form-group">
+                                <label for="name">Given Names<span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="gname" name="given_name" placeholder="Enter Given Names" minlength="4" value="<?=check_if('given_names');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Family Names<span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" name="family_names" id="family" placeholder="Enter Family Names" minlength="4" value="<?=check_if('family_names');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Other Names</label>
+                                <input type="text" class="form-control" name="other_names" id="other" placeholder="Enter Other Names" value="<?=check_if('other_names');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender<span class="required-mark">*</span></label>
+                                <div>
+                                    <small id="small">Male</small>
+                                    <input type="radio" name="gender" value="Male" checked="checked" id="gender"  style="margin-left: 20%">
+                                </div>
+                                <div>
+                                    <small id="small">Female</small>
+                                    <input type="radio" name="gender" value="Female" id="gender" style="margin-left: 18%">
+                                </div>
+
+                            </div>
+                            <input type="hidden" name="institution" value="4">
+                            <div class="form-group">
+                                <label for="contact_phone">Date of Birth<span class="required-mark">*</span></label>
+                                <input type="date" class="form-control" id="contact_phone" placeholder="Enter Date of Birth" name="dob" value="<?=check_if('dob');?>">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="contact_name">Place of Birth<span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="pob" placeholder="Enter Place Of Birth" name="pob" value="<?=check_if('pob');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Nationality Of Birth<span class="required-mark">*</span></label>
+                                <select class="form-control" id="country" name="nob">
+                                    <?php $st2 = $database->query("SELECT * FROM countries");
+                                    foreach ($st2 as $key => $value) {?>
+                                        <option id="option" <?=check_if("nob")===$value['id']?"  selected":""?> value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="location"> Email<span class="required-mark">*</span></label>
+                                <input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<?=check_if('email');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Telephone</label>
+                                <input type="text" class="form-control" name="telephone" id="telephone" placeholder="telephone" minlength="10" value="<?=check_if('telephone');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Passport No<span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" name="pass_no" id="pass" placeholder="Enter passport No"  value="<?=check_if('pass_no');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Date of Issue of Passport<span class="required-mark">*</span></label>
+                                <input type="date" class="form-control" name="doi" id="doi" placeholder="Date of Issue of Transport"  value="<?=check_if('doi');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Expiry Date<span class="required-mark">*</span></label>
+                                <input type="date" class="form-control" name="doe" id="doe" placeholder="Expiry date"  value="<?=check_if('doe');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Profession</label>
+                                <input type="text" class="form-control" name="profession" id="profession" placeholder="profession"  value="<?=check_if('profession');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Occupation</label>
+                                <input type="text" class="form-control" name="occupation" id="occupation" placeholder="occupation" value="<?=check_if('occupation');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Father's Name<span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" name="father_name" id="fathern" placeholder="Father's Name" minlength="4" value="<?=check_if('father_name');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Father's Nationality<span class="required-mark">*</span></label>
+                                <select class="form-control" id="country" name="father_nat">
+                                    <?php $st2 = $database->query("SELECT * FROM countries");
+                                    foreach ($st2 as $key => $value) {?>
+                                        <option id="option" <?=check_if("father_nat")===$value['id']?"  selected":""?> value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Mother's Names<span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" name="mother_name" id="fassmily" placeholder="Mother's Names" minlength="4" value="<?=check_if('mother_name');?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Mother's Nationality<span class="required-mark">*</span></label>
+                                <select class="form-control" id="country" name="mother_nat">
+                                    <?php $st2 = $database->query("SELECT * FROM countries");
+                                    foreach ($st2 as $key => $value) {?>
+                                        <option id="option" <?=check_if("mother_nat")===$value['id']?"  selected":""?> value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Malital Status<span class="required-mark">*</span></label>
+                                <select class="form-control" id="mat" name="marital_status">
+                                    <option id="option" value="Married">Married</option>
+                                    <option id="option" value="Single">Single</option>
+                                    <option id="option" value="widow">Widow</option>
+                                    <option id="option" value="Divorced">Divorced</option>
+                                </select>
+                            </div></div>
+
                   <div>
                     <button  type="submit" name="save1" class="btn pull-right">Save and Continue</button>
                   </div>
@@ -255,37 +261,81 @@ label{
 <script src="assets/js/lib/vector-map/jquery.vmap.sampledata.js"></script>
 <script src="assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
 <script type="text/javascript">
-    $("#country option[value=178]").prop('selected', true);
+    // $("#country option[value=178]").prop('selected', true);
     $(function() {
-    $("#form").validate({
-      rules: {
+        $.validator.addMethod("phoneCheck",function (value) {
+            return /^\+?\d{10,13}$/.test(value) || value ==="";
+        },' Enter a valid Phone number');
+        $("#form").validate({
+            rules: {
 
-          given_names: "required",
-          family_names:"required",
-          dob: "required",
-          pass_no: "required",
-          pob: "required",
-          telephone: "required",
-          email: {
-          required: true,
-          email: true
-        },
-          pass_no:"required",
-          doi:"required",
-          doe:"required",
-          father_name:"required",
-          mather_name:"required",
-          marital_status:"required",
-          mother_nat:"required",
-          father_nat:"required"
+                given_names: "required",
+                family_names:"required",
+                dob: "required",
+                pass_no: "required",
+                telephone: {
+                    phoneValid : true
+                },
+                pob: "required",
+                email: {
+                    required: true,
+                    email: true
+                },
+                pass_no:"required",
+                doi:"required",
+                doe:"required",
+                father_name:"required",
+                mather_name:"required",
+                marital_status:"required",
+                mother_nat:"required",
+                father_nat:"required"
 
 
-      },
+            },
 
-      submitHandler: function(form) {
-        form.submit();
-      }
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
     });
+    function getIt(id) {
+        $.ajax({
+            url : 'getEmbassy',
+            type : 'POST',
+            data : { id : id},
+            success : function (data) {
+                if (data==="no Embassy registered check Country selected"){
+                    $('#embassy').val(data);
+                    $("#form-body").hide();
+                    $("#savebtn").hide();
+                }
+                else{
+                    $("#form-body").show();
+                    $('#embassy').val(data);
+                    $("#savebtn").show();
+                }}
+        });
+    }
+    $(document).ready(function () {
+        var optVal= $("#country2 option:selected").val();
+        getIt(optVal);
     });
-
+    $(document.body).on('change',"#country2",function (e) {
+        var optVal= $("#country2 option:selected").val();
+        getIt(optVal);
+    });
 </script>
+ <script type="text/javascript">
+        $(document.body).on('change',"#mat",function (e) {
+            var optVal= $("#mat option:selected").val();
+            if (optVal !== 'Married'){
+                $('#spouse').hide();
+                $('#lmat').hide();
+                $('#spouse').val('');
+            }
+            else{
+                $('#spouse').show();
+                $('#lmat').show();
+            }
+        });
+ </script>
