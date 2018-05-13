@@ -436,7 +436,6 @@ require_once '../web-config/database.php';
                                             <th>Location</th>
                                             <th>Phone Number</th>
                                             <th>Contact Person</th>
-                                            <th>Duration</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -451,7 +450,6 @@ require_once '../web-config/database.php';
                                             <td><?=$value['location']?></td>
                                             <td><?=$value['telephone']?></td>
                                             <td><?=$value['contact_person']?></td>
-                                            <td><?=$value['duration']?></td>
                                             <td><a href="display?id=<?=$Hash->encrypt($value['id'])?>"><input class="btn btn-primary update" type="submit" value="View More" id="btn" name="" data-id=<?=$value['id']?>></a></td>
                                         </tr>
                         <?php } ?>                
