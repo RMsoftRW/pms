@@ -1,6 +1,7 @@
 <?php
 require_once("../web-config/config.php");
 require_once ("../web-config/database.php");
+include ("includes/encryption.php");
 
 if(isset($_POST["add"])){
 
@@ -65,6 +66,7 @@ if(isset($_POST["username_update"])){
 
     }}
 if (isset($_POST["change"])){
+
     $id=$_POST["id"];
     $p=$_POST["p"];
     $pnew=$_POST["p1"];
@@ -160,7 +162,11 @@ if (isset($_POST["level"])){
         $status=$row["active"];
         $avatar=$row["avatar"];
         $inst=$row['id_institution'];
-        $show=" <tr><td>$count</td>";
+        $id=$row["id"];
+        $Hash=new Encryption();
+        $id_hash=$Hash->encrypt($id);
+        $show="<tr><td><span class='custom-checkbox'><input type='checkbox' id='.$id.' name='options[]' value=$id><label for='checkbox'></label></span></td>";
+        $show.=" <td>$count</td>";
         if (file_exists("../uploads/user/".$u."/".$avatar)){
             $src="../uploads/user/".$u."/".$avatar;
         }
@@ -184,7 +190,9 @@ if (isset($_POST["level"])){
         }
         $i=$database->get_item("level","id",$row['level'],"name");
         $show.="<td>$i</td>
-        <td><a href='#' class='view' title='View Details' data-toggle='tooltip'><i class='material-icons'>&#xE5C8;</i></a></td>
+        <td><a href='edituser?id=$id_hash' class='edit'><i class='material-icons' data-toggle='tooltip' title='Edit'>&#xE254;</i></a>
+                                <a href='#deleteuserModal' class='delete' data-toggle='modal'><i class='material-icons' data-toggle='tooltip' title='Delete'>&#xE872;</i></a>
+                            </td>
         </tr>";
         $count++;
         $html.=$show;
@@ -196,6 +204,3 @@ if (isset($_POST["level"])){
         echo $html;
     }
 }
-
-
-
