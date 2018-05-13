@@ -33,8 +33,8 @@ if (isset($_POST['save1'])) {
             header("location:register-ambassador-step2?id=$id");
         }
     }
-
-    $sql= "INSERT INTO diplomats(given_names,family_names,other_names,gender,dob,pob,nob,email,telephone,pass_no,nop,doi,doe,profession,occupation,father_name,father_nat,mother_name,mother_nat,marital_status,embassy,type) VALUES('$given','$fnames','$other','$gender','$dob','$pob','$nob','$email','$telephone','$pass_no','$nop','$doi','$doe','$profession','$occupation','$father_name','$father_nat','$mother_name','$mother_nat','$marital_status','$embassy','ambassador')";
+    else{
+         $sql= "INSERT INTO diplomats(given_names,family_names,other_names,gender,dob,pob,nob,email,telephone,pass_no,nop,doi,doe,profession,occupation,father_name,father_nat,mother_name,mother_nat,marital_status,embassy,type) VALUES('$given','$fnames','$other','$gender','$dob','$pob','$nob','$email','$telephone','$pass_no','$nop','$doi','$doe','$profession','$occupation','$father_name','$father_nat','$mother_name','$mother_nat','$marital_status','$embassy','ambassador')";
 
     if ($database->query($sql)) {
         $id=$database->inset_id();
@@ -42,6 +42,9 @@ if (isset($_POST['save1'])) {
         header("location:register-ambassador-step2?id=$id");
     }
 
+    }
+
+   
 
 }
 if (isset($_POST['save2'])){
@@ -56,8 +59,8 @@ if (isset($_POST['save2'])){
         $sql = "UPDATE add_info_amb SET request_date='$request_date',arrival='$arrival',departure='$departure',presentation_date='$cred' WHERE id=$id_add ";
         header("location:displayperson?id=$ambassador");
     }else{
-    if ($database->query($sql)) {
         $sql = "INSERT INTO add_info_amb(request_date,arrival,departure,presentation_date) VALUES ('$request_date','$arrival','$departure','$cred')";
+    if ($database->query($sql)) {
         header("location:displayperson?id=$ambassador");
     }
     }
