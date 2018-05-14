@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 10, 2018 at 05:19 PM
+-- Generation Time: May 13, 2018 at 03:36 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -38,13 +38,6 @@ CREATE TABLE `add_info_amb` (
   `id_embassy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `add_info_amb`
---
-
-INSERT INTO `add_info_amb` (`id`, `request_date`, `arrival`, `departure`, `presentation_date`, `id_ambassador`, `id_embassy`) VALUES
-(1, '0000-00-00', '2018-05-11', '2018-05-11', '2018-05-31', 6, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -55,30 +48,40 @@ CREATE TABLE `cars` (
   `id` int(11) NOT NULL,
   `plate_nber` varchar(15) NOT NULL,
   `model` varchar(50) NOT NULL,
-  `warranty` text NOT NULL,
   `insurance_camp` varchar(100) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `owner` int(11) NOT NULL,
-  `type` int(11) NOT NULL DEFAULT '0',
-  `status` varchar(20) NOT NULL DEFAULT 'active'
+  `status` enum('1','0') NOT NULL DEFAULT '1',
+  `owner_type` enum('1','2') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `cars`
+-- Table structure for table `children`
 --
 
-INSERT INTO `cars` (`id`, `plate_nber`, `model`, `warranty`, `insurance_camp`, `date`, `owner`, `type`, `status`) VALUES
-(1, 'RAB 457C', 'Range Rover', '', 'SONARWA', '2018-05-06 14:39:52', 1, 0, 'active'),
-(2, 'dd', 'fff', 'ff', 'fff', '2018-05-06 15:43:15', 2, 0, 'active'),
-(3, 'm;sac;l', ';msca;lm', '', 'cs;mlcsa', '2018-05-07 01:09:54', 5, 0, 'active'),
-(4, 'RANB', 'BJKBJK', '', 'VJVJH', '2018-05-07 01:12:44', 5, 0, 'active'),
-(5, 'RAB 457C', 'toyota', '', 'SORAS', '2018-05-07 06:24:48', 6, 0, 'active'),
-(6, 'vbhjj', 'nkbj', '', 'jbkb', '2018-05-07 06:38:06', 4, 0, 'active'),
-(7, 'csklnskcl', 'c l slcm;msc', '', ' clksnklsc', '2018-05-07 06:44:47', 1, 0, 'active'),
-(8, 'rab33', 'toyotata', '', 'soras', '2018-05-07 11:06:00', 1, 0, 'active'),
-(9, ' ', ' ', '', ' ', '2018-05-07 11:09:25', 3, 0, 'active'),
-(10, ' ', ' ', ' ', ' ', '2018-05-07 11:11:22', 3, 0, 'active'),
-(11, 'RAB435X', 'Suzuki Grand Vitara', '', 'BK insurance', '2018-05-07 12:54:28', 7, 0, 'active');
+CREATE TABLE `children` (
+  `id` int(11) NOT NULL,
+  `given_names` varchar(20) NOT NULL,
+  `family_names` varchar(20) NOT NULL,
+  `other_names` varchar(20) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `dob` date NOT NULL,
+  `pob` varchar(30) NOT NULL,
+  `nob` int(11) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `pass_no` varchar(30) NOT NULL,
+  `nop` int(11) NOT NULL,
+  `doi` date NOT NULL,
+  `doe` date NOT NULL,
+  `profession` varchar(30) NOT NULL,
+  `occupation` varchar(30) NOT NULL,
+  `employer` varchar(30) NOT NULL,
+  `photo` varchar(255) NOT NULL,
+  `parent` int(11) NOT NULL,
+  `school` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -88,23 +91,14 @@ INSERT INTO `cars` (`id`, `plate_nber`, `model`, `warranty`, `insurance_camp`, `
 
 CREATE TABLE `comments` (
   `id` int(11) NOT NULL,
-  `user` varchar(20) NOT NULL,
+  `user` int(11) NOT NULL,
   `comment` varchar(300) NOT NULL,
-  `type` varchar(20) NOT NULL,
+  `attachment` varchar(30) NOT NULL,
   `owner` int(11) NOT NULL,
-  `time` datetime NOT NULL,
-  `status` varchar(20) NOT NULL
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('1','0') NOT NULL DEFAULT '1',
+  `owner_type` enum('1','2') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `comments`
---
-
-INSERT INTO `comments` (`id`, `user`, `comment`, `type`, `owner`, `time`, `status`) VALUES
-(1, 'Ani7', 'hello world this ios', 'Rwandan Embassy', 2, '2018-05-06 11:58:39', 'active'),
-(2, 'kk', 'fromkk', 'Rwandan Embassy', 2, '2018-05-06 13:33:29', 'active'),
-(3, 'erid', 'hello', 'Rwandan Embassies', 2, '2018-05-06 17:42:41', 'active'),
-(4, 'gtr', 'bfgrt', 'Foreign Embassies', 3, '2018-05-07 13:12:48', 'deleted');
 
 -- --------------------------------------------------------
 
@@ -119,18 +113,6 @@ CREATE TABLE `companion` (
   `dob` date NOT NULL,
   `visitor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `companion`
---
-
-INSERT INTO `companion` (`names`, `id`, `gender`, `dob`, `visitor`) VALUES
-('mlc;samc;l', 1, 'Male', '2012-12-12', 1),
-('mlc;samc;l', 2, 'Female', '2012-12-12', 1),
-('lasclk', 3, 'Male', '2111-02-12', 1),
-('hued', 4, 'Female', '2018-05-03', 2),
-('frd', 5, 'Male', '2018-05-03', 2),
-('hsew', 6, 'Male', '2018-05-03', 2);
 
 -- --------------------------------------------------------
 
@@ -422,26 +404,13 @@ CREATE TABLE `diplomats` (
   `mother_name` varchar(30) NOT NULL,
   `mother_nat` int(11) NOT NULL,
   `marital_status` varchar(20) NOT NULL,
+  `id_embassy` int(11) NOT NULL,
   `spouse` varchar(30) NOT NULL,
   `visit_details` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `photo` varchar(255) NOT NULL,
   `embassy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `diplomats`
---
-
-INSERT INTO `diplomats` (`id`, `given_names`, `family_names`, `other_names`, `gender`, `dob`, `pob`, `nob`, `email`, `telephone`, `pass_no`, `nop`, `doi`, `doe`, `profession`, `occupation`, `employer`, `father_name`, `father_nat`, `mother_name`, `mother_nat`, `marital_status`, `spouse`, `visit_details`, `type`, `photo`, `embassy`) VALUES
-(1, 'Gakyeli Eric', 'Gakyeli', 'Gakx', 'Male', '1000-12-12', 'Tanzania Mucyaro', 178, 'gakxeric250@gmail.com', '0788996656', '12', 1, '2010-12-12', '2011-12-12', 'professional thief', 'stealing', 'none', 'none also', 1, 'none too', 1, 'single and divorced', 'kanjogera', 1, '', '', 0),
-(2, '', '', '', 'Male', '2018-05-17', '', 168, 'j@h.com', '', '', 12, '2018-05-24', '2018-05-28', '', '', '', '', 6, '', 16, '', '', 0, '', '', 0),
-(3, 'jules', 'hewo', 'kukuo', 'Male', '2018-05-17', '', 178, 'j@h.com', '', '', 1, '2018-05-24', '2018-05-28', '', '', '', '', 1, '', 1, 'frew', 'hytu', 2, '', '', 0),
-(4, '', 'test', '', 'Female', '2018-05-31', 'test', 174, 'ht@htm.com', '04563456778', '34567788999', 16, '2018-05-25', '2018-05-26', '', '', '', 'frtyu', 17, 'test', 11, 'single', '', 0, 'ambassador', '', 0),
-(5, 'test', 'test', '', 'Female', '2018-05-31', 'test', 178, 'ht@htm.com', '04563456778', '34567788999', 16, '2018-05-25', '2018-05-26', '', '', '', 'frtyu', 17, 'test', 11, 'single', '', 0, 'ambassador', '', 0),
-(6, 'test', 'test', '', 'Male', '2018-05-31', 'test', 178, 'ht@htm.com', '04563456778', '34567788999', 1, '2018-05-25', '2018-05-26', '', '', '', 'frtyu', 1, 'test', 1, 'single', '', 0, 'ambassador', '', 0),
-(7, 'tony Blair lennon', 'blair', 'tony le', 'Male', '1995-03-02', 'manchester', 1, 'tony@tony.com', '07841646546', '12102', 1, '2012-12-12', '2013-12-12', 'politician', 'minister and adviser', 'Uk government', 'tony merce', 1, 'tony clipton', 1, 'maried', 'blair balbra', 0, '', '', 0),
-(8, 'tony Blair lennon', 'blair', 'tony le', 'Male', '1995-03-02', 'manchester', 178, 'tony@tony.com', '07841646546', '12102', 1, '2012-12-12', '2013-12-12', 'politician', 'minister and adviser', 'Uk government', 'tony merce', 1, 'tony clipton', 1, 'maried', 'blair balbra', 0, '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -475,10 +444,10 @@ CREATE TABLE `employees` (
 CREATE TABLE `houses` (
   `id` int(11) NOT NULL,
   `type` varchar(250) NOT NULL,
-  `id_location` int(11) NOT NULL,
   `owner` int(11) NOT NULL,
-  `status` varchar(20) NOT NULL,
-  `location` varchar(400) NOT NULL
+  `status` enum('1','0') NOT NULL DEFAULT '1',
+  `location` varchar(400) NOT NULL,
+  `owner_type` enum('1','2') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -514,9 +483,6 @@ CREATE TABLE `institution_details` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `id_institution` int(11) NOT NULL,
-  `id_location` int(11) NOT NULL,
-  `id_car` int(11) NOT NULL,
-  `id_house` int(11) NOT NULL,
   `telephone` text NOT NULL,
   `contact_person` text NOT NULL,
   `country` int(11) NOT NULL,
@@ -527,7 +493,7 @@ CREATE TABLE `institution_details` (
   `comments` varchar(500) NOT NULL,
   `benefits` text NOT NULL,
   `meeting` text NOT NULL,
-  `animal_contribution` text NOT NULL,
+  `anual_contribution` varchar(30) NOT NULL,
   `responsible_ministry` text NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
@@ -537,19 +503,6 @@ CREATE TABLE `institution_details` (
   `attachment` text NOT NULL,
   `payment_date` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `institution_details`
---
-
-INSERT INTO `institution_details` (`id`, `name`, `id_institution`, `id_location`, `id_car`, `id_house`, `telephone`, `contact_person`, `country`, `country_loc`, `location`, `email`, `contact_phone`, `comments`, `benefits`, `meeting`, `animal_contribution`, `responsible_ministry`, `start_date`, `end_date`, `duration`, `status`, `state`, `attachment`, `payment_date`) VALUES
-(1, 'Unicef', 4, 0, 0, 0, '0786655448', 'Kayitare Prince', 178, 0, 'kk 44 st', 'unisef@gmail.com', '0788996655', '', 'kkkk', 'gghh', 'nbhgv', 'bjvhjd', '0000-00-00', '0000-00-00', '', 1, 0, 'uploads/index.php', '40 jan'),
-(2, 'test', 2, 0, 0, 0, 'kiu', 'test', 16, 171, 'test', 'l@g.c', 'derick', '', '', '', '', '', '0000-00-00', '0000-00-00', '', 1, 0, '', ''),
-(3, '\'', 2, 0, 0, 0, 'ki', 'ewe', 11, 171, 'der', 'l@g.com', 'vf', '', '', '', '', '', '0000-00-00', '0000-00-00', '', 1, 0, '', ''),
-(4, 'Prince foundation', 4, 0, 0, 0, '+254454545', 'tomy hilfiger', 178, 0, 'nyarugenge kv,234', 'found@found.com', '+256565666', '', '', '', '', '', '0000-00-00', '0000-00-00', '', 1, 0, '', ''),
-(5, 'Prince foundation', 4, 0, 0, 0, '+254454545', 'tomy hilfiger', 178, 0, 'nyarugenge kv,234', 'found@found.com', '+256565666', '', '', '', '', 'minafet', '0000-00-00', '0000-00-00', '', 1, 0, '', ''),
-(6, 'gty', 3, 0, 0, 0, '07889966', 'juy', 1, 0, 'hyt', 'le@gmail.com', 'gtyu', '', '', '', '', '', '0000-00-00', '0000-00-00', '', 1, 0, '', ''),
-(7, 'Testing NGO', 4, 0, 0, 0, '6326320632063', 'Rushema Anicet', 178, 0, 'Kigali, nyamirambo ', 'test@gmail.com', '85413263203', '', '', '', '', '', '0000-00-00', '0000-00-00', '', 1, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -591,6 +544,42 @@ CREATE TABLE `location` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `spouse`
+--
+
+CREATE TABLE `spouse` (
+  `id` int(11) NOT NULL,
+  `given_names` varchar(20) NOT NULL,
+  `family_names` varchar(20) NOT NULL,
+  `other_names` varchar(20) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `dob` date NOT NULL,
+  `pob` varchar(30) NOT NULL,
+  `nob` int(11) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `pass_no` varchar(30) NOT NULL,
+  `nop` int(11) NOT NULL,
+  `doi` date NOT NULL,
+  `doe` date NOT NULL,
+  `profession` varchar(30) NOT NULL,
+  `occupation` varchar(30) NOT NULL,
+  `employer` varchar(30) NOT NULL,
+  `father_name` varchar(30) NOT NULL,
+  `father_nat` int(11) NOT NULL,
+  `mother_name` varchar(30) NOT NULL,
+  `mother_nat` int(11) NOT NULL,
+  `id_embassy` int(11) NOT NULL,
+  `visit_details` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `photo` varchar(255) NOT NULL,
+  `embassy` int(11) NOT NULL,
+  `patner` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -617,8 +606,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `fname`, `mname`, `lname`, `username`, `password`, `active`, `level`, `date_created`, `lastlogin`, `ip`, `id_institution`, `avatar`, `status`, `email`) VALUES
-(1, 'Anicet', '', 'R', 'Ani7', 'ef192ca0744dfba366394dc048fc1fe4', '1', '1', '2016-04-14 02:22:15', '2018-05-10 13:33:20', '1', 0, '0', 'active', 'rushemaa@gm'),
-(2, 'Anicet', '', 'R', 'prince', '5f4dcc3b5aa765d61d8327deb882cf99', '1', '1', '2016-04-14 02:22:15', '2018-05-10 09:16:17', '1', 0, '0', 'deleted', ''),
+(1, 'Anicet', '', 'R', 'Ani7', 'ef192ca0744dfba366394dc048fc1fe4', '1', '1', '2016-04-14 02:22:15', '2018-05-13 14:57:42', '1', 0, '0', 'active', 'rushemaa@gm'),
+(2, 'Anicet', '', 'R', 'prince', '5f4dcc3b5aa765d61d8327deb882cf99', '1', '1', '2016-04-14 02:22:15', '2018-05-11 13:31:40', '1', 0, '0', 'deleted', ''),
 (3, 'jules', '', 'lolo', 'juju', '0348dcd774a2892097b9d5c84ce882d3', '0', '1', '2018-05-09 15:46:41', '0000-00-00 00:00:00', '', 0, '', 'deleted', 'ht@htm.com'),
 (4, 'jules', '', 'test', 'juju', '0348dcd774a2892097b9d5c84ce882d3', '0', '1', '2018-05-09 16:09:38', '0000-00-00 00:00:00', '', 2, '', 'active', 'ht@htm.com');
 
@@ -635,16 +624,10 @@ CREATE TABLE `visit` (
   `arrival` date NOT NULL,
   `departure` date NOT NULL,
   `id_embassy` int(11) NOT NULL,
-  `protocol` varchar(255) NOT NULL
+  `protocol` varchar(255) NOT NULL,
+  `visitor` int(11) NOT NULL,
+  `companion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `visit`
---
-
-INSERT INTO `visit` (`id`, `reason`, `host_person`, `arrival`, `departure`, `id_embassy`, `protocol`) VALUES
-(1, 'no reason actually', '0', '2012-12-12', '2111-11-12', 2, 'protocol'),
-(2, '', '', '2018-05-04', '2018-05-17', 3, '');
 
 --
 -- Indexes for dumped tables
@@ -660,6 +643,12 @@ ALTER TABLE `add_info_amb`
 -- Indexes for table `cars`
 --
 ALTER TABLE `cars`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `children`
+--
+ALTER TABLE `children`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -717,6 +706,12 @@ ALTER TABLE `location`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `spouse`
+--
+ALTER TABLE `spouse`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -736,25 +731,31 @@ ALTER TABLE `visit`
 -- AUTO_INCREMENT for table `add_info_amb`
 --
 ALTER TABLE `add_info_amb`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cars`
 --
 ALTER TABLE `cars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `children`
+--
+ALTER TABLE `children`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `companion`
 --
 ALTER TABLE `companion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `countries`
@@ -766,7 +767,7 @@ ALTER TABLE `countries`
 -- AUTO_INCREMENT for table `diplomats`
 --
 ALTER TABLE `diplomats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `houses`
@@ -784,7 +785,7 @@ ALTER TABLE `institution`
 -- AUTO_INCREMENT for table `institution_details`
 --
 ALTER TABLE `institution_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `level`
@@ -799,6 +800,12 @@ ALTER TABLE `location`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `spouse`
+--
+ALTER TABLE `spouse`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
@@ -808,7 +815,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `visit`
 --
 ALTER TABLE `visit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
