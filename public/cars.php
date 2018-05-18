@@ -16,7 +16,7 @@
                $display= "display";
             }
             elseif ($rowi['owner_type']== 2) {
-               $display= "displayperson";
+               $display= "diplomat-details";
             }    
         // deleting a car
         if(isset($_POST['del'])){

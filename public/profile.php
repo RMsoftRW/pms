@@ -90,7 +90,7 @@
                 <div class="page-title">
                     <ol class="breadcrumb text-right">
                         <li><a href="home">Dashboard</a></li>
-                        <li><a href="">Users</a></li>
+                        <li><a href="users">Users</a></li>
                         <li class="active">Profile</li>
                     </ol>
                 </div>
@@ -116,11 +116,11 @@
                         $u=$_SESSION["username"];
                         $avatar=$user["avatar"];
 
-                        if( $avatar== NULL || !file_exists("../uploads/users/$u/$avatar")){
-                            $profile_pic = "images/default_profile.png";
+                        if( $avatar== NULL || !file_exists("uploads/avatar/$avatar")){
+                            $profile_pic = "images/default_profile.jpg";
                         }
                         else{
-                            $profile_pic = '../uploads/users/'.$u.'/'.$avatar.'" alt="'.$u;
+                            $profile_pic = 'uploads/avatar/'.$avatar.'" alt="'.$u;
                         }
                         ?>
                         <div class="card-body">
@@ -239,23 +239,23 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form onsubmit="return false" method='post' name="form">
-                        <label >Current password</label>
+                    <form id="passfrm" onsubmit="return false" method='post' name="form">
+                        <label >Current password<span class="required-mark">*</span></label>
                         <div class="form-group">
                             <div class="form-line">
-                                <input type="password" id="cpass" class="form-control" name="cpass" autocomplete="off">
+                                <input type="password" id="cpass" class="form-control" minlength="4" name="cpass" autocomplete="off" required>
                             </div>
                         </div>
-                        <label >New password</label>
+                        <label >New password<span class="required-mark">*</span></label>
                         <div class="form-group">
                             <div class="form-line">
-                                <input type="password" id="p1" class="form-control" name="p1" autocomplete="off">
+                                <input type="password" id="p1" class="form-control" minlength="4" name="p1" autocomplete="off" required>
                             </div>
                         </div>
-                        <label >Confirm New password</label>
+                        <label >Confirm New password<span class="required-mark">*</span></label>
                         <div class="form-group">
                             <div class="form-line">
-                                <input type="password" id="p2" class="form-control" name="p2" autocomplete="off">
+                                <input type="password" id="p2" class="form-control" minlength="4" name="p2" autocomplete="off" required>
                             </div>
                         </div>
 
@@ -280,50 +280,15 @@
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/plugins.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="js/ajax.js"></script>
 <script src="assets/js/vendor/jquery-1.11.3.min.js"></script>
+<script src="assets/js/jquery.validate.js"></script>
+<script src="js/ajax.js"></script>
+<script src="assets/js/sweetalert.min.js"></script>
 <script>
-    function toggleElement(x){
-        var x = _(x);
-        if(x.style.display == 'block'){
-            x.style.display = 'none';
-        }else{
-            x.style.display = 'block';
-        }
-    }
-
-    function password(id) {
-        var p=_("cpass").value;
-        var p1=_("p1").value;
-        var p2=_("p2").value;
-        if(p1!=p2){
-            _('error').innerHTML="<span style='color: red'>Password don't march!</span>";
-        }
-        else if(p=="" || p2=="" || p1==""){
-            _('error').innerHTML="<span style='color: red'>Fill all Field</span>";
-        }
-        else{
-            var ajax = ajaxObj("POST", "addUser.php");
-            ajax.onreadystatechange = function() {
-                if(ajaxReturn(ajax) == true) {
-                    if(ajax.responseText == "invalid"){
-                        _('error').innerHTML="<span style='color: red'>Invalid current password</span>";
-                    } else if(ajax.responseText == "updated") {
-                        _('error').innerHTML="<span style='color: green'>Updated!</span>";
-                        _("changepass").modal("hide");
-
-                    }
-                }
-            };
-            ajax.send("p="+p+"&p1="+p1+"&id="+id+"&change=password");
-
-
-        }
-
-
-    }
+    var validator = $( "#passfrm" ).validate();
     $(document).ready(function () {
         //If image edit link is clicked
+
         $(".editLink").on('click', function(e){
             e.preventDefault();
             $("#fileInput:hidden").trigger('click');
@@ -371,16 +336,46 @@
         });
 
     });
-
-    //After completion of image upload process
-    function completeUpload(fileName) {
-
-        $('#imagePreview').attr("src", "");
-        $('#imagePreview').attr("src", fileName);
-        $('#fileInput').attr("value", fileName);
-        $('.uploadProcess').hide();
-        return true;
+    function toggleElement(x){
+        var x = _(x);
+        if(x.style.display == 'block'){
+            x.style.display = 'none';
+        }else{
+            x.style.display = 'block';
+        }
     }
+
+    function password(id) {
+        _('error').innerHTML="";
+        var p=_("cpass").value;
+        var p1=_("p1").value;
+        var p2=_("p2").value;
+        if(p1!=p2){
+            _('error').innerHTML="<span style='color: red'>Password don't march!</span>";
+        }
+        else if(validator.form()){
+            var ajax = ajaxObj("POST", "userAction");
+            ajax.onreadystatechange = function() {
+                if(ajaxReturn(ajax) == true) {
+                    if(ajax.responseText == "invalid"){
+                        _('error').innerHTML="<span style='color: red'>Invalid current password</span>";
+                        _("cpass").focus();
+                    } else if(ajax.responseText == "updated") {
+                        _('error').innerHTML="<span style='color: green'>Updated!</span>";
+
+                       location.href="logout";
+
+                    }
+                }
+            };
+            ajax.send("p="+p+"&p1="+p1+"&id="+id+"&change=password");
+
+
+        }
+
+
+    }
+
 </script>
 
 

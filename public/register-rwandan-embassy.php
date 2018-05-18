@@ -112,17 +112,19 @@ label{
                     <legend>Registration Form  for Rwandan Embassy</legend>
                     <form action="save.php" id="form" method="POST">
                   <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Embassy Name" value="<?=check_if('name');?>">
+                    <label for="name">Name<span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter  Name" value="<?=check_if('name');?>">
                   </div>
                   <div class="form-group">
                     <label for="name">Phone</label>
-                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Embassy Phone" value="<?=check_if('telephone');?>">
+                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter  Phone" value="<?=check_if('telephone');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter Embassy Phone" value="<?=check_if('email');?>">
+                    <label for="name">Email<span class="required-mark">*</span></label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email" value="<?=check_if('email');?>">
                   </div>
+                        <?php if (isset($_GET['id'])){?>
+                            <input type="hidden" name="id" value="<?=$Hash->decrypt($_GET['id'])?>"> <?php } ?>
                   <input type="hidden" name="institution" value="3">
                   <div class="form-group">
                     <label for="contact_phone">Contact Person Phone Number</label>
@@ -135,17 +137,18 @@ label{
                   <div class="form-group">
                     <label for="country">Country</label>
                         <select class="form-control" id="country" name="country">
+                            <option id="option" value="0">SELECT A COUNTRY</option>
                     <?php $st2 = $database->query("SELECT * FROM countries"); 
                     foreach ($st2 as $key => $value) {?>
-                        <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                        <option id="option" value="<?=$value['id']?>" <?=check_if("country")=== $value['id']? " selected":"" ?>><?=$value['name']?></option><?php } ?>
                         </select>
                   </div>
                   <div class="form-group">
-                    <label for="location"> Location</label>
+                    <label for="location"> Location<span class="required-mark">*</span></label>
                     <input type="text" name="location" class="form-control" id="location" placeholder="Full Address" value="<?=check_if('location');?>">  
                   </div>
                   <div>
-                    <button  type="submit" name="save1" class="btn pull-right">Save and Continue</button>
+                    <button  type="submit" name="save1" class="btn pull-right">Save </button>
                   </div>
                     </form>
                 </div>
@@ -170,12 +173,13 @@ label{
     $(document).ready(function(){
         $(function() {
             $.validator.addMethod("phoneCheck",function (value) {
-                return /^\+?\d{10,13}/.test(value) || value ==="";
+                return /^\+?\d{10,13}$/.test(value) || value ==="";
             },' Enter a valid Phone number');
             $("#form").validate({
                 rules: {
                     name: "required",
                     location: "required",
+                    country: {min:1},
                     phone    :{ phoneCheck: true,required:false},
                     contact_phone :{ phoneCheck: true},
                     email: {
@@ -184,6 +188,7 @@ label{
                     }
 
                 },
+                messages : {country:"Please Select a Valid Country"},
                 submitHandler: function(form) {
                     form.submit();
                 }

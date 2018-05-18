@@ -70,23 +70,23 @@ $rlt = $database->query("SELECT * FROM institution_details WHERE id_institution=
 
                                             <div class="form-group">
                                                 <label class="form-label">First Name<span class="required-mark">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Enter First name" name="firstname" id="firstname"  required="" value="">
+                                                <input type="text" class="form-control" placeholder="Enter First name" name="firstname" autocomplete="off" minlength="2" id="firstname"  required >
                                                 
                                             </div>
                                     <div class="form-group">
                                         <label class="form-label">Middle name</label>
-                                            <input type="text" class="form-control" placeholder="Enter Middle name" name="middlename" id="middlename" required=""  value="">
+                                            <input type="text" class="form-control" placeholder="Enter Middle name" minlength="2" autocomplete="off" name="middlename" id="middlename"   >
                                             
                                         
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Last Name<span class="required-mark">*</span></label>
-                                            <input type="text" class="form-control" name="lastname" placeholder="Enter Last name" id="lastname" required="" value="">
+                                            <input type="text" class="form-control" name="lastname" placeholder="Enter Last name" autocomplete="off" minlength="2" id="lastname" required >
                                             
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Email<span class="required-mark">*</span></label>
-                                            <input type="email" class="form-control" placeholder="Enter email"  name="email" id="email"   value="">
+                                            <input type="email" class="form-control" placeholder="Enter email" autocomplete="off"  name="email" id="email" required >
                                             
                                 
                                     </div>
@@ -94,7 +94,8 @@ $rlt = $database->query("SELECT * FROM institution_details WHERE id_institution=
                                         <label class="form-label">Access Level<span class="required-mark">*</span></label>
                                         
 
-                                            <select class="form-control" id="level" name="level">
+                                            <select class="form-control" id="level" name="level" required>
+                                                <option value="">--Please Choose--</option>
                                                 <?php
                                                 $query= "SELECT * FROM `level`";
                                                 $result1 = $database->query($query);
@@ -104,7 +105,8 @@ $rlt = $database->query("SELECT * FROM institution_details WHERE id_institution=
                                     </div>
                                     <div class="form-group ">
                                         <label class="form-label">Institution<span class="required-mark">*</span></label>
-                                            <select class="form-control show-tick" id="institution" name="institution">
+                                            <select class="form-control show-tick" id="institution" name="institution" required>
+                                                <option value="">--Please Choose--</option>
                                                 <option value="0">MOFA</option>
                                                 <?php while ($row=$database->fetch_array($rlt)) {?>
                                                 <option value="<?php echo $row["id"];?>"><?php echo $row["name"];} ?></option>
@@ -113,14 +115,14 @@ $rlt = $database->query("SELECT * FROM institution_details WHERE id_institution=
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Username<span class="required-mark">*</span></label>
-                                            <input type="text" class="form-control"  name="username" placeholder="Enter username" autocomplete="off" id="username" onblur="check_username()"  value="">
-                                        <span  id="feedback"></span>
+                                            <input type="text" class="form-control"  name="username" placeholder="Enter username" minlength="4" autocomplete="off" id="username" onblur="check_username()" required >
+                                        <span  id="username_status"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Password<span class="required-mark">*</span></label>
-                                            <input type="text" class="form-control" placeholder="Enter password" name="password"  id="password"  autocomplete="off"  value="">
-                                            <span>* required fields</span>
-                                        <span id="error"></span>
+                                            <input type="text" class="form-control" placeholder="Enter password" name="password"  id="password"  autocomplete="off" minlength="4" required >
+
+
                                         
                                     </div>
                                             <span id="status"></span>
@@ -160,9 +162,13 @@ $rlt = $database->query("SELECT * FROM institution_details WHERE id_institution=
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/vendor/jquery-1.11.3.min.js"></script>
+    <script src="assets/js/jquery.validate.js"></script>
     <script src="js/ajax.js"></script>
     <script src="js/user.js"></script>
     <script src="assets/js/sweetalert.min.js"></script>
+
+
 
     </body>
 </html>

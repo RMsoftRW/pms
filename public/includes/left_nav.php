@@ -44,7 +44,15 @@ $re=$database->query($sql);
                     </li>
 
                     <li class="menu-item-has-children dropdown">
-                        <a href="single1"> <i class="menu-icon fa fa-th"></i>Diplomats</a>
+                        <a href="single1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>View Diplomats</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon ti-user"></i><a href="singledip.php?id=<?=$Hash->encrypt(1)?>">All Diplomats</a></li>
+                            <li><i class="menu-icon ti-user"></i><a href="singledip.php?id=<?=$Hash->encrypt(2)?>">Ambassadors</a></li>
+                            <li><i class="menu-icon ti-user"></i><a href="singledip.php?id=<?=$Hash->encrypt(3)?>">Foreign Diplomats</a></li>
+                            <li><i class="menu-icon ti-user"></i><a href="singledip.php?id=<?=$Hash->encrypt(4)?>">Rwandan Diplomats</a></li>
+                            <li><i class="menu-icon ti-user"></i><a href="singledip.php?id=<?=$Hash->encrypt(5)?>">Visitors</a></li>
+                        </ul>
+                        
                     </li>
 
                     <h3 class="menu-title">Institutions</h3><!-- /.menu-title -->
@@ -66,18 +74,16 @@ $re=$database->query($sql);
 
 
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Embassy</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>View Embassy</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon ti-home"></i><a href="single.php?id=<?=$Hash->encrypt(3)?>&name=<?=$Hash->encrypt('Rwandan Embassy')?>">Rwandan Embassy</a></li>
-                            <li><i class="menu-icon ti-home"></i><a href="single.php?id=<?=$Hash->encrypt(2)?>&name=<?=$Hash->encrypt('Foreign Embassy')?>">Foreign Embassy</a></li>
+                            <li><i class="menu-icon ti-list"></i><a href="single.php?id=<?=$Hash->encrypt(3)?>&name=<?=$Hash->encrypt('Rwandan Embassy')?>">Rwandan Embassy</a></li>
+                            <li><i class="menu-icon ti-list"></i><a href="single.php?id=<?=$Hash->encrypt(2)?>&name=<?=$Hash->encrypt('Foreign Embassy')?>">Foreign Embassy</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="single.php?id=<?=$Hash->encrypt(4)?>&name=<?=$Hash->encrypt('NGO')?>"> <i class="menu-icon ti-home"></i>NGO </a>
+                        <a href="single.php?id=<?=$Hash->encrypt(4)?>&name=<?=$Hash->encrypt('NGO')?>"> <i class="menu-icon ti-list"></i>NGO </a>
                     </li>
-                    <li>
-                        <a href="single.php?id=<?=$Hash->encrypt(1)?>&name=<?=$Hash->encrypt('MOFA Employees')?>"> <i class="menu-icon ti-home"></i>Mofa </a>
-                    </li>
+                    
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon ti-user"></i>Users</a>
                         <ul class="sub-menu children dropdown-menu">

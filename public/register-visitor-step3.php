@@ -3,7 +3,7 @@ require_once '../web-config/config.php';
 require_once '../web-config/database.php';
 
 if (!isset($_GET['id'])) {
-    header("location:register-ngo-step2");
+    header("location:register-visitor-step2");
 }?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -119,22 +119,22 @@ if (!isset($_GET['id'])) {
                 </div>
                 <div class="tab-content-body">
                     <legend>Registration Form - Step III </legend>
-                    <form action="save-visitors.php" method="POST" id="form">
+                    <div style="margin-bottom: 70px;">
+                    <a href="displayperson?id=<?=$id_hash?>"><button class="btn  pull-right" style="padding-right: 50px;padding-left: 50px;"> Skip this Step  <span style="color: #E74C3C;margin-left: 12%"> <i class="fa fa-arrow-right"></i> </span> </button> </a>
+                    </div>
+                        <form action="save-visitors.php" method="POST" id="form">
                         <input type="hidden" value="<?=$visit?>" name="visit">
                         <div class="form-group">
-                            <label for="name">Names</label>
-                            <input type="text" class="form-control" id="names" name="names" placeholder="Names">
+                            <label for="name">Names<span class="required-mark">*</span></label>
+                            <input type="text" class="form-control"  id="names" name="names" placeholder="Names">
                         </div>
                         <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <div>
-                                <small id="small">Male</small>
-                                <input type="radio" name="gender" checked="checked" value="Male" id="gender" style="margin-left: 20%">
-                            </div>
-                            <div>
-                                <small id="small">Female</small>
-                                <input type="radio" name="gender" value="Female" id="gender" style="margin-left: 18%">
-                            </div>
+                            <label for="gender">Gender<span class="required-mark">*</span></label>
+                            <select name="gender" class="form-control" id="gender">
+                                <option value="0">SELECT GENDER</option>
+                                <option value="Male">Male</option>
+                                <option value="Male">Female</option>
+                            </select>
 
                         </div>
                         <input type="hidden" name="visitor" value="<?=$Hash->decrypt($_GET['id'])?>">
@@ -148,11 +148,11 @@ if (!isset($_GET['id'])) {
                               -webkit-transform: scale(2);
                               -o-transform: scale(2);
                               padding: 6px;">
-                            <span style="margin-left: 5%;font-size: 14px;color:#272C33;font-weight: bold">Save and Continue</span>
+                            <span style="margin-left: 5%;font-size: 14px;color:#272C33;font-weight: bold">Finish adding Companions</span>
                         </div>
                         <div class="pull-right">
                             <a class="btn" href="register-visitor-step2?id=<?=$id_hash?>" style="color: white">Previous</a>
-                            <button class="btn" type="submit" name="save3">Save and Continue</button>
+                            <button class="btn" type="submit" name="save3">Save</button>
                         </div>
                     </form>
                 </div>
@@ -173,15 +173,20 @@ if (!isset($_GET['id'])) {
 <script src="assets/js/lib/vector-map/jquery.vmap.sampledata.js"></script>
 <script src="assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
 <script type="text/javascript">
-    $("#country option[value=178]").prop('selected', true);
-    $("#form").validate({
-        rules: {
-            plate_number: "required",
-            model: "required",
-            insurance: "required"
-        },
-        submitHandler: function(form) {
-            form.submit();
-        }
+    $(function() {
+        $.validator.addMethod("validCountry", function (value, element, arg) {
+            return arg !== value;
+        }, "Select a Valid Country");
+        $("#form").validate({
+            rules: {
+                gender: {validCountry : "0"},
+                names: "required",
+                insurance: "required"
+            },
+            messages: {gender: "Please select A Valid Gender"},
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
     });
 </script>

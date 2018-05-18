@@ -15,17 +15,7 @@ require_once '../web-config/database.php';
     }
     $id = $Hash->decrypt($_GET['id']);
     $id_hash = $_GET['id'];
-
-function check_if($value){
-    $Hash = new Encryption();
-    $database = new mysqldatabase(DB_NAME);
-    if (isset($_GET['id'])) {
-    $id = $Hash->decrypt($_GET['id']);
-    $val = $database->get_item('add_info_amb','id_ambassador',$id,$value);
-    return $val;
-    }
-    else return "";
-    }  ?>
+    ?>
 </head>
 <body>
 <style type="text/css">
@@ -92,7 +82,7 @@ function check_if($value){
         text-align: center;
     }
 
-    #nav-tab ul li { display: inline;float: left;padding: 15px 16%;background:#272c33;border-right: 1px solid grey }
+    #nav-tab ul li { display: inline;float: left;padding: 15px 17%;background:#272c33;border-right: 1px solid grey }
     #nav-tab ul li a{
         color: #fff;
     }
@@ -114,29 +104,29 @@ function check_if($value){
                     </ul>
                 </div>
                 <div class="tab-content-body">
-                    <legend>Registration Form- Step II (<?=$database->get_item('diplomats','id',$id,'given_names');?>)</legend>
-                    <form action="save-ambassadors" method="POST"  id="form">
-                        <input type="hidden" name="ambass" value="<?=check_if('add_info_amb','id_ambassador',$id,'id')?>">
+                    <legend>Ambassador Form - Step II (<?=$database->get_item('diplomats','id',$id,'given_names');?>)</legend>
+
+                    <form action="save-ambassadors.php" method="POST"  id="form">
                         <div class="form-group">
-                            <label for="name">Request Date</label>
-                            <input type="date" class="form-control" name="request-d" value="<?=check_if("request_date")?>" id="request-d" placeholder="Request Date">
+                            <label for="name">Request Date<span class="required-mark">*</span></label>
+                            <input type="date" class="form-control" name="request-d" required id="request-d" placeholder="Request Date">
                         </div>
                         <div class="form-group">
-                            <label for="name">Date of Arrival</label>
-                            <input type="date" class="form-control" name="arrival" value="<?=check_if("arrival")?>" id="arrival" placeholder="Date of Arrival">
+                            <label for="name">Date of Arrival<span class="required-mark">*</span></label>
+                            <input type="date" class="form-control" name="arrival" id="arrival" required placeholder="Date of Arrival">
                         </div>
                         <div class="form-group">
-                            <label for="name">Departure date</label>
-                            <input type="date" class="form-control" id="departure" value="<?=check_if("departure")?>" name="departure" placeholder="Departure date">
+                            <label for="name">Departure date<span class="required-mark">*</span></label>
+                            <input type="date" class="form-control" id="departure" required name="departure" placeholder="Departure date">
                         </div>
                         <div class="form-group">
-                            <label for="name">Date of presentation of credentials</label>
-                            <input type="date" class="form-control" id="cred" name="cred" value="<?=check_if("presentation_date")?>" placeholder="Date of presentation of credentials">
+                            <label for="name">Date of presentation of credentials<span class="required-mark">*</span></label>
+                            <input type="date" class="form-control" id="cred" required name="cred" placeholder="Date of presentation of credentials">
                         </div>
                         <input type="hidden" name="ambassador" value="<?=$id_hash;?>">
                         <div class="pull-right">
                             <a class="btn" href="register-ambassador?id=<?=$id_hash?>" style="color: white">Previous</a>
-                            <button class="btn" type="submit" name="save2">Save and Continue</button>
+                            <button class="btn" type="submit" name="save2">Save</button>
                         </div>
                     </form>
                 </div>
@@ -162,12 +152,6 @@ function check_if($value){
         $("#form").validate({
             rules: {
 
-                responsible_ministry: "required",
-                animal: "required",
-                date: "required",
-                meeting: "required",
-                contact_name: "required",
-                benefits: "required",
             },
             submitHandler: function(form) {
                 form.submit();

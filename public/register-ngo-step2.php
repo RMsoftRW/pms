@@ -118,21 +118,21 @@ label{
                     <legend>Registration Form  <?=$database->get_item('institution_details','id',$id,'name');?></legend>
                     <form action="save-additional.php" method="POST" enctype="multipart/form-data" id="form">
                   <div class="form-group">
-                    <label for="name">Responsible Ministry</label>
+                    <label for="name">Responsible Ministry<span class="required-mark">*</span></label>
                     <input type="text" class="form-control" name="responsible_ministry" value="<?=check_if('responsible_ministry');?>"  placeholder="Responsible Ministry">
                   </div>  
                   <div class="form-group">
-                    <label for="name">Annual Contribution</label>
-                    <input type="text" class="form-control" name="animal" value="<?=check_if('animal_contribution');?>" id="animal" placeholder="Annual Contribution">
+                    <label for="name">Annual Contribution<span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" name="animal" value="<?=check_if('anual_contribution');?>" id="animal" placeholder="Annual Contribution">
                   </div>  
                   <input type="hidden" name="id" value="<?=$id;?>">
                   <div class="form-group">
                     <label for="name">Legal Document</label>
-                    <input type="file" class="form-control" name="attachment" id="phone" placeholder="Upload your Legal Document">
+                    <input type="file" class="form-control" name="attachment" id="attachment" placeholder="Upload your Legal Document">
                   </div>
                   <div class="form-group">
                     <label for="name">DeadLine to Pay</label>
-                    <input type="text" class="form-control" id="date" value="<?=check_if('payment_date');?>" name="date" placeholder="eg: 01 - jan">
+                    <input type="date" class="form-control" id="date" value="<?=check_if('payment_date');?>" name="date" placeholder="eg: 01 - jan">
                   </div>
                   <div class="form-group">
                     <label for="name">Meeting and Participation</label>
@@ -145,7 +145,7 @@ label{
   
                   <div class="pull-right">
                     <a class="btn" href="register-ngo?id=<?=$id_hash?>" style="color: white">Previous</a>
-                    <button class="btn" type="submit" name="save">Save and Continue</button>
+                    <button class="btn" type="submit" name="save">Save</button>
                   </div>
                     </form>
                 </div>

@@ -45,7 +45,7 @@ require_once("includes/validate_credentials.php");
         <?php
         if (isset($_GET['id'])){
         $id = $Hash->decrypt($_GET['id']);
-        $stmt = $database->query("SELECT *  FROM user WHERE id = '$id'");
+        $stmt = $database->query("SELECT *  FROM user WHERE id = '$id' AND status='1'");
         $row = $database->fetch_array($stmt);
         ?>
         <div class="content mt-3">
@@ -70,32 +70,33 @@ require_once("includes/validate_credentials.php");
                                   <form id="updatefrm"   onsubmit="return false" method="post" novalidate="novalidate" enctype="multipart/form-data">
 
                                             <div class="form-group">
-                                                <label class="form-label">First Name</label>
-                                                <input type="text" class="form-control" placeholder="Enter First name" autocomplete="off" name="firstname" id="firstname"  required="" value="<?php echo $row['fname']; ?>">
+                                                <label class="form-label">First Name<span class="required-mark">*</span></label>
+                                                <input type="text" class="form-control" placeholder="Enter First name" autocomplete="off" minlength="2" name="firstname" id="firstname"  required value="<?php echo $row['fname']; ?>">
 
                                             </div>
                                     <div class="form-group">
                                         <label class="form-label">Middle name</label>
-                                            <input type="text" class="form-control" placeholder="Enter Middle name" name="middlename" autocomplete="off" id="middlename" required=""  value="<?php echo $row['mname']; ?>">
+                                            <input type="text" class="form-control" placeholder="Enter Middle name" name="middlename" autocomplete="off" id="middlename"   value="<?php echo $row['mname']; ?>">
 
 
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Last Name</label>
-                                            <input type="text" class="form-control" name="lastname" placeholder="Enter Last name" autocomplete="off" id="lastname" required="" value="<?php echo $row['lname']; ?>">
+                                        <label class="form-label">Last Name<span class="required-mark">*</span></label>
+                                            <input type="text" class="form-control" name="lastname" placeholder="Enter Last name" minlength="2" autocomplete="off" id="lastname" required value="<?php echo $row['lname']; ?>">
 
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                            <input type="email" class="form-control" placeholder="Enter email"  name="email" id="email" autocomplete="off"   value="<?php echo $row['email']; ?>">
+                                        <label class="form-label">Email<span class="required-mark">*</span></label>
+                                            <input type="email" class="form-control" placeholder="Enter email"  name="email" id="email" autocomplete="off" required   value="<?php echo $row['email']; ?>">
 
 
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Access Level</label>
+                                        <label class="form-label">Access Level<span class="required-mark">*</span></label>
 
 
-                                            <select class="form-control" id="level" name="level">
+                                            <select class="form-control" id="level" name="level" required>
+                                                <option value="">--Please Choose--</option>
                                                 <?php
                                                 $query= "SELECT * FROM `level`";
                                                 $result1 = $database->query($query);
@@ -113,21 +114,19 @@ require_once("includes/validate_credentials.php");
                                             </select>
                                     </div>
                                     <div class="form-group ">
-                                        <label class="form-label">Institution</label>
+                                        <label class="form-label">Institution<span class="required-mark">*</span></label>
 
-                                            <select class="form-control show-tick" id="institution" name="institution">
+                                            <select class="form-control show-tick" id="institution" name="institution" required>
+                                                <option value="">--Please Choose--</option>
                                                 <?php if($row["institution"]==0){?>
                                                 <option selected value="0">MOFA</option>
                                                 <?php }else { ?>
                                                     <option value="0">MOFA</option>
                                                 <?php } ?>
                                                 <?php
-                                                $query= "SELECT Id FROM `institution` WHERE Name='Foreign Embassies'";
-                                                $result = $database->query($query);
-                                                $row2=$database->fetch_array($result);
-                                                $id2=$row2[0];
 
-                                                $q= "SELECT * FROM institution_details WHERE id_institution='$id2'";
+
+                                                $q= "SELECT * FROM institution_details WHERE id_institution=3";
                                                 $rlt = $database->query($q);
                                                 while ($inst=$database->fetch_array($rlt)) {
                                                     if($inst["id"]==$row['institution']){ ?>
@@ -144,13 +143,13 @@ require_once("includes/validate_credentials.php");
 
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Username</label>
-                                            <input type="text" class="form-control"  name="username"  placeholder="Enter username" autocomplete="off" id="username" onblur="check_username_update(<?php echo $id; ?>)"  value="<?php echo $row['username']; ?>">
+                                        <label class="form-label">Username<span class="required-mark">*</span></label>
+                                            <input type="text" class="form-control" minlength="4"  name="username"  placeholder="Enter username" autocomplete="off" id="username" onblur="check_username_update(<?php echo $id; ?>)"  value="<?php echo $row['username']; ?>">
                                         <span  id="username_status"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Password</label>
-                                            <input type="text" class="form-control" placeholder="Enter password" autocomplete="off" name="password"  id="password"   value="">
+                                            <input type="text" class="form-control"  minlength="4" placeholder="Enter password" autocomplete="off" name="password"  id="password"   value="">
 
                                     </div>
                                             <span id="status"></span>
@@ -158,7 +157,7 @@ require_once("includes/validate_credentials.php");
                         <button type="submit" id="updatebtn" class="btn btn-primary btn-sm" onclick="editUser(<?php echo $id; ?>)">
                           <i class="fa fa-dot-circle-o"></i> Update
                         </button>
-                        <a href="users.php" class="btn btn-danger btn-sm">
+                        <a href="users" class="btn btn-danger btn-sm">
                           <i class="fa fa-ban"></i> Cancel
                         </a>
                       </div>
@@ -192,6 +191,8 @@ require_once("includes/validate_credentials.php");
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/vendor/jquery-1.11.3.min.js"></script>
+    <script src="assets/js/jquery.validate.js"></script>
     <script src="js/ajax.js"></script>
     <script src="js/user.js"></script>
     <script src="assets/js/sweetalert.min.js"></script>

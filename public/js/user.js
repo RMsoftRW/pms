@@ -1,63 +1,71 @@
 var username_state = false;
-
+var validator = $( "#registerfrm" ).validate();
+var validatorUpdate = $( "#updatefrm" ).validate();
+var validatorUpdateProfile = $( "#update_profile" ).validate();
 function _(el){
     return document.getElementById(el);
 }
 
 function check_username(){
-
+    var status=_("username_status");
     var username = _('username').value;
-    if (username == '') {
+    if (username == '' || username.length<4) {
         username_state = false;
-        _("feedback").innerHTML="";
-        return;
+        status.innerHTML="";
     }
-    var ajax = ajaxObj("POST", "userAction.php");
-    ajax.onreadystatechange = function() {
-        if(ajaxReturn(ajax) == true) {
-            if(ajax.responseText == "taken"){
-                username_state = false;
-                _("feedback").innerHTML="<span style='color:red;'>Sorry... Username already taken!</span>";
-                //username.parent().addClass("is-invalid");
-            } else if(ajax.responseText == "not_taken") {
-                username_state = true;
-                _("feedback").innerHTML="<span style='color:green;'>Username available</span>";
-                // username.parent().addClass("is-valid");
+    else{
+        var ajax = ajaxObj("POST", "userAction");
+        ajax.onreadystatechange = function() {
+            if(ajaxReturn(ajax) == true) {
+
+                if(ajax.responseText == "taken"){
+                    username_state = false;
+
+                    status.innerHTML="<span style='color:red;'>Username taken. Please choose another one</span>";
+
+                } else if(ajax.responseText == "not_taken") {
+                    username_state = true;
+                    status.innerHTML="";
+                }
             }
-        }
-    };
-    ajax.send("username="+username+"&username_check=1");
+        };
+        ajax.send("username="+username+"&username_check=1");
+    }
+
 }
 function check_username_update(id){
     var username = _('username').value;
     var status=_("username_status");
     var i=id;
-    if (username == '') {
+    if (username == '' || username.length<4) {
         username_state = false;
        status.innerHTML="";
-        return;
+
     }
-    var ajax = ajaxObj("POST", "userAction.php");
-    ajax.onreadystatechange = function() {
-        if(ajaxReturn(ajax) == true) {
-            if(ajax.responseText == "taken"){
-                username_state = false;
-                status.innerHTML="<span style='color:red;'>Sorry... Username already taken!</span>";
-            } else if(ajax.responseText == "not_taken") {
-                username_state = true;
-                //username.parent().addClass("is-invalid");
-                status.innerHTML="<span style='color:green;'>Username available</span>";
+    else{
+        var ajax = ajaxObj("POST", "userAction.php");
+        ajax.onreadystatechange = function() {
+            if(ajaxReturn(ajax) == true) {
+                if(ajax.responseText == "taken"){
+                    username_state = false;
+                    status.innerHTML="<span style='color:red;'>Username taken. Please choose another one</span>";
+                } else if(ajax.responseText == "not_taken") {
+                    username_state = true;
+                    status.innerHTML="";
+                }
+
             }
-            else {
-                alert(ajax.responseText);
-            }
-        }
-    };
-    ajax.send("username="+username+"&id="+i+"&username_update=1");
+        };
+        ajax.send("username="+username+"&id="+i+"&username_update=1");
+    }
+
 }
 
 
-function register() {
+function register()
+{
+
+
       var  firstname=_("firstname" ).value;
         var lastname=_('lastname').value;
         var middle=_('middlename').value;
@@ -66,23 +74,23 @@ function register() {
         var institution=_('institution').value;
         var level=_('level').value;
         var username=_('username').value;
-        var status=_("status");
-    if(firstname == "" || lastname == "" || email == "" || password == "" || institution == "" || level == "" || username == ""){
-        status.innerHTML = "<span style='color:red;'>Fill out all of the form data</span>";
-    }
-    else if(username_state===false){
-        status.innerHTML = "<span style='color:red;'>Choose collect username.</span>";
-    }
-    else if(username_state) {
-        var ajax = ajaxObj("POST", "userAction.php");
+    $( "#registerfrm" ).validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            }
+        }
+    });
+
+   if(username_state && validator.form()) {
+        var ajax = ajaxObj("POST", "userAction");
         ajax.onreadystatechange = function() {
             if(ajaxReturn(ajax) == true) {
                 if(ajax.responseText == "success"){
-                    swal("Saved!", "success");
+                    swal("Saved!");
                     _("registerfrm").reset();
-                    status.innerHTML =" ";
-                } else {
-                    status.innerHTML = "<span style='color:red;'>An Error occurred while saving!</span>";
+
                 }
             }
         };
@@ -96,7 +104,7 @@ function register() {
 }
 
 function editUser(id) {
-   username_state=true;
+    username_state=true;
     var  firstname=_("firstname" ).value;
     var lastname=_('lastname').value;
     var middle=_('middlename').value;
@@ -105,24 +113,18 @@ function editUser(id) {
     var institution=_('institution').value;
     var level=_('level').value;
     var username=_('username').value;
-    var status=_("status");
-    if(firstname == "" || lastname == "" || email == "" || institution == "" || level == "" || username == ""){
-        status.innerHTML = "<span style='color:red;'>Fill out all of the form data</span>";
-    }
-    else if(username_state===false){
-        status.innerHTML = "<span style='color:red;'>Choose collect username.</span>";
-    }
-    else if(username_state) {
-        var ajax = ajaxObj("POST", "userAction.php");
+
+     if(username !="" && username_state===false){
+
+         _("username_status").focus();
+
+     }
+     else if(username_state && validatorUpdate.form()) {
+        var ajax = ajaxObj("POST", "userAction");
         ajax.onreadystatechange = function() {
             if(ajaxReturn(ajax) == true) {
-
                 if(ajax.responseText == "updated"){
-                    swal("updated!", "success");
-                    status.innerHTML ="";
-                    window.location.replace("users");
-                } else {
-                    status.innerHTML = "<span style='color:red;'>error.</span>";
+                    swal("updated!");
 
                 }
             }
@@ -132,6 +134,47 @@ function editUser(id) {
 
     }
 
+
+
+}
+function ValidateEmail(inputText)
+{
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(inputText.match(mailformat))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function update_profile() {
+
+
+    var  firstname=_("firstname" ).value;
+    var lastname=_('lastname').value;
+    var middle=_('middlename').value;
+    var  email=_('email').value;
+    var username=_('username').value;
+    var id=_('hash').value;
+     check_username_update(id);
+     if(username_state && validatorUpdateProfile.form()) {
+        var ajax = ajaxObj("POST", "userAction");
+        ajax.onreadystatechange = function() {
+            if(ajaxReturn(ajax) == true) {
+
+                if(ajax.responseText == "updated"){
+                    swal("updated!");
+                    location.reload();
+                }
+            }
+        };
+        ajax.send("username="+username+"&firstname="+firstname+"&middlename="+middle+"&email="+email+"&lastname="+lastname+"&id="+id+"&update=update");
+
+
+    }
 
 
 }

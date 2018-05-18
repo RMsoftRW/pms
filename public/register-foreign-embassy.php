@@ -112,18 +112,20 @@ label{
                     <legend>Registration Form  for Foreign Embassies</legend>
                     <form action="save.php" method="POST" id="form">
                   <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Embassy Name" value="<?=check_if('name');?>">
+                    <label for="name">Name<span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter  Name" value="<?=check_if('name');?>">
                   </div>
                   <div class="form-group">
                     <label for="name">Phone</label>
-                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Embassy Phone" value="<?=check_if('telephone');?>">
+                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter  Phone" value="<?=check_if('telephone');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter Embassy Phone" value="<?=check_if('email');?>">
+                    <label for="name">Email<span class="required-mark">*</span></label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email" value="<?=check_if('email');?>">
                   </div>
-                  <input type="hidden" name="institution" value="2">
+                        <?php if (isset($_GET['id'])){?>
+                            <input type="hidden" name="id" value="<?=$Hash->decrypt($_GET['id'])?>"> <?php } ?>
+                  <input type="hidden" name="institution" id="institution" value="2">
                   <div class="form-group">
                     <label for="contact_phone">Contact Person Phone Number</label>
                     <input type="text" class="form-control" id="contact_phone" placeholder="Enter Contact Person Phone Number" name="contact_phone" value="<?=check_if('contact_phone');?>">
@@ -135,27 +137,29 @@ label{
                   <div class="form-group">
                     <label for="country">Country</label>
                         <select class="form-control" id="country" name="country">
+                            <option id="option" value="0">SELECT A COUNTRY</option>
                     <?php $st2 = $database->query("SELECT * FROM countries"); 
                     foreach ($st2 as $key => $value) {?>
-                        <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                        <option id="option" value="<?=$value['id']?>" <?=check_if("country")=== $value['id']? " selected":"" ?>><?=$value['name']?></option><?php } ?>
                         </select>
                   </div>
                   <div class="group" style="border: 1px solid grey;padding: 10px;">
                   <div class="form-group">
-                    <label for="location"> Location</label>
+                    <label for="location"> Location<span class="required-mark">*</span></label>
                     <input type="text" name="location" class="form-control" id="location" placeholder="Full Address" value="<?=check_if('location');?>">  
                   </div>
                   <div class="form-group">
                     <label for="country">Country Residence</label>
                         <select class="form-control" id="country2" name="country_loc">
+                            <option id="option" value="0">SELECT A COUNTRY</option>
                     <?php $st2 = $database->query("SELECT * FROM countries"); 
                     foreach ($st2 as $key => $value) {?>
-                        <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                        <option id="option" value="<?=$value['id']?>" <?=check_if("country_loc")=== $value['id']? " selected":"" ?>><?=$value['name']?></option><?php } ?>
                         </select>
                   </div>
                   </div>
                   <div>
-                    <button  type="submit" name="save1" class="btn pull-right">Save and Continue</button>
+                    <button  type="submit" name="save2" class="btn pull-right">Save </button>
                   </div>
                     </form>
                 </div>
@@ -179,20 +183,37 @@ label{
     $("#country2 option[value=178]").prop('selected', true);
     $(function() {
         $.validator.addMethod("phoneCheck",function (value) {
-            return /^\+?\d{10,13}$/.test(value) || value ==="";
+            return /^\+?\d{3,13}/.test(value) || value ==="";
+        },' Enter a valid Phone number');
+
+        $.validator.addMethod("countryCheck",function (value) {
+            $.ajax({
+               url : "checkCountry.php",
+               type : "POST",
+               data  : value,
+               success : function (data) {
+                   if (data !=="true")
+                       return true;
+                   else
+                       return false
+               }
+            });
         },' Enter a valid Phone number');
         $("#form").validate({
             rules: {
                 name: "required",
                 location: "required",
-                phone    :{ phoneCheck: true,required:false},
+                country:{min :1},
+                country_loc:{min :1},
                 contact_phone :{ phoneCheck: true},
+                phone :{ phoneCheck: true},
                 email: {
                     required: true,
                     email: true
                 }
 
             },
+            messages:{country:"please select a valid country",country_loc:"please select a valid country"},
             submitHandler: function(form) {
                 form.submit();
             }

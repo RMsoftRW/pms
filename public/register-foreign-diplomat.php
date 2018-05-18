@@ -119,12 +119,13 @@ require_once '../web-config/database.php';
                 </div>
                 <div class="tab-content-body">
                     <legend>Registration Form  for Foreign Diplomats</legend>
-                    <form action="save-visitors.php" method="POST" id="form">
+                    <form action="save-foreign-diplomats.php" method="POST" id="form">
                         <?php if (isset($_GET['id'])){$id = $Hash->decrypt($_GET['id']);?>
                             <input type="hidden" name="update" value="<?=$id?>"><?php }?>
                         <div class="form-group">
                             <label for="name">Nationality of Passport<span class="required-mark">*</span></label>
                             <select class="form-control" id="country2" name="nop">
+                                <option value="0">SELECT NATIONALITY</option>
                                 <?php $st2 = $database->query("SELECT * FROM countries");
                                 foreach ($st2 as $key => $value) {?>
                                     <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
@@ -147,18 +148,15 @@ require_once '../web-config/database.php';
                             <label for="name">Other Names</label>
                             <input type="text" class="form-control" name="other_names" id="other" placeholder="Enter Other Names" value="<?=check_if('other_names');?>">
                         </div>
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <div>
-                                <small id="small">Male</small>
-                                <input type="radio" name="gender" value="Male" checked="checked" id="gender"  style="margin-left: 20%">
-                            </div>
-                            <div>
-                                <small id="small">Female</small>
-                                <input type="radio" name="gender" value="Female" id="gender" style="margin-left: 18%">
-                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender<span class="required-mark">*</span></label>
+                                <select name="gender" class="form-control" id="gender">
+                                    <option value="0">SELECT GENDER</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Male">Female</option>
+                                </select>
 
-                        </div>
+                            </div>
                         <input type="hidden" name="institution" value="4">
                         <div class="form-group">
                             <label for="contact_phone">Date of Birth<span class="required-mark">*</span></label>
@@ -173,6 +171,7 @@ require_once '../web-config/database.php';
                         <div class="form-group">
                             <label for="country">Nationality Of Birth<span class="required-mark">*</span></label>
                             <select class="form-control" id="country" name="nob">
+                                <option value="0">SELECT NATIONALITY</option>
                                 <?php $st2 = $database->query("SELECT * FROM countries");
                                 foreach ($st2 as $key => $value) {?>
                                     <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
@@ -183,7 +182,7 @@ require_once '../web-config/database.php';
                             <input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<?=check_if('email');?>">
                         </div>
                         <div class="form-group">
-                            <label for="name">Telephone<span class="required-mark">*</span></label>
+                            <label for="name">Telephone</label>
                             <input type="text" class="form-control" name="telephone" id="telephone" placeholder="telephone"  value="<?=check_if('telephone');?>">
                         </div>
                         <div class="form-group">
@@ -210,7 +209,7 @@ require_once '../web-config/database.php';
                         </div>
                         <div class="form-group">
                             <label for="name">Employer<span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" name="employer" id="employer" placeholder="Eployer"  value="<?=check_if('employer');?>">
+                            <input type="text" class="form-control" name="employer" id="employer" placeholder="Employer"  value="<?=check_if('employer');?>">
                         </div>
                         <div class="form-group">
                             <label for="name">Father's Name<span class="required-mark">*</span></label>
@@ -219,6 +218,7 @@ require_once '../web-config/database.php';
                         <div class="form-group">
                             <label for="name">Father's Nationality<span class="required-mark">*</span></label>
                             <select class="form-control" id="country" name="father_nat">
+                                <option value="0">SELECT NATIONALITY</option>
                                 <?php $st2 = $database->query("SELECT * FROM countries");
                                 foreach ($st2 as $key => $value) {?>
                                     <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
@@ -231,6 +231,7 @@ require_once '../web-config/database.php';
                         <div class="form-group">
                             <label for="name">Mother's Nationality<span class="required-mark">*</span></label>
                             <select class="form-control" id="country" name="mother_nat">
+                                <option value="0">SELECT NATIONALITY</option>
                                 <?php $st2 = $database->query("SELECT * FROM countries");
                                 foreach ($st2 as $key => $value) {?>
                                     <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
@@ -239,18 +240,15 @@ require_once '../web-config/database.php';
                         <div class="form-group">
                             <label for="name">Malital Status<span class="required-mark">*</span></label>
                             <select class="form-control" id="mat" name="marital_status">
+                                <option id="option" value="0">SELECT A MALITAL STATUS</option>
                                 <option id="option" value="Married">Married</option>
                                 <option id="option" value="Single">Single</option>
                                 <option id="option" value="Divorced">Divorced</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="name"  id="lmat">Name of Spouse<span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" name="spouse" id="spouse" placeholder="Spouse" minlength="4" value="<?=check_if('spouse');?>">
-                        </div>
                     </div>
                         <div id="savebtn">
-                            <button  type="submit" name="save1" class="btn pull-right">Save and Continue</button>
+                            <button  type="submit" name="save1" class="btn pull-right">Save</button>
                         </div>
                     </form>
                 </div>
@@ -271,13 +269,15 @@ require_once '../web-config/database.php';
 <script src="assets/js/lib/vector-map/jquery.vmap.sampledata.js"></script>
 <script src="assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
 <script type="text/javascript">
-    $("#country option[value=178]").prop('selected', true);
+    // $("#country option[value=178]").prop('selected', true);
     $(function() {
 
         $.validator.addMethod("phoneCheck",function (value) {
             return /^\+?\d{10,13}$/.test(value) || value ==="";
         },' Enter a valid Phone number');
-
+        $.validator.addMethod("validStatus", function (value,element,arg) {
+            return arg !== value;
+        }, "Select a Valid Status");
         $("#form").validate({
             rules: {
                 given_names: "required",
@@ -286,8 +286,7 @@ require_once '../web-config/database.php';
                 pass_no: "required",
                 pob: "required",
                 telephone: {
-                    required:true,
-                    phoneValid : true
+                    phoneCheck : true
                 },
                 mother_name: "required",
                 father_name: "required",
@@ -300,13 +299,17 @@ require_once '../web-config/database.php';
                 doe:"required",
                 father_name:"required",
                 mather_name:"required",
-                marital_status:"required",
-                mother_nat:"required",
-                father_nat:"required"
-
-
+                marital_status:{validStatus : "0"},
+                mother_nat:{min:1},
+                nob:{min:1},
+                gender:{validStatus : "0"},
+                father_nat:{min:1},
             },
-
+            messages : {marital_status:"Please Select a Valid Status",
+                        mother_nat:"Please Select a Valid Country",
+                        father_nat:"Please Select a Valid Country",
+                        nob:"Please Select a Valid Country",
+                        gender:"Please Select a Valid Gender"},
             submitHandler: function(form) {
                 form.submit();
             }

@@ -13,16 +13,17 @@ require_once '../web-config/database.php';
     if (!isset($_GET['id'])) {
         header("location:register-visitor");
     }
+    $id_main = $Hash->decrypt($_GET['id']);
     $id = $Hash->decrypt($_GET['id']);
     $id_hash = $_GET['id'];
+
 
  function check_if($value){
         $Hash = new Encryption();
         $database = new mysqldatabase(DB_NAME);
         if (isset($_GET['id'])) {
             $id = $Hash->decrypt($_GET['id']);
-            $id = $database->get_item("visit",'visitor',$id,'id');
-            $val = $database->get_item('visit','id',$id,$value);
+            $val = $database->get_item('visit','visitor',$id,$value);
             return $val;
         }
         else return "";
@@ -122,21 +123,21 @@ require_once '../web-config/database.php';
                     </ul>
                 </div>
                 <div class="tab-content-body">
-                    <legend>Registration Form - Step II</legend>
+                    <legend>Registration Form - Step II<br><small>(<?=$database->get_item('diplomats','id',$id,'given_names');?>)</small></legend>
                     <form action="save-visitors.php" method="POST"  id="form">
-                        <input type="hidden" name="visit" value="<?=check_if("visit",'visitor',$id,'id')?>">
+                        <input type="hidden" name="visit" value="<?=check_if('id')?>">
                         <div class="form-group">
-                            <label for="name">Reason For Visiting</label>
-                            <input type="text" class="form-control" name="reason" value="<?=check_if("reason")?>"  placeholder="Reason For Visiting">
+                            <label for="name">Reason For Visiting<span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" required name="reason" value="<?=check_if("reason")?>"  placeholder="Reason For Visiting">
                         </div>
                         <div class="form-group">
-                            <label for="name">Proposed Person/instutition to visit</label>
-                            <input type="text" class="form-control" value="<?=check_if("host_person")?>" name="host_person" id="animal" placeholder="Proposed Person/instutition to visit">
+                            <label for="name">Proposed Person/instutition to visit<span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" required value="<?=check_if("host_person")?>" name="host_person" id="animal" placeholder="Proposed Person/instutition to visit">
                         </div>
-                        <input type="hidden" name="visitor" value="<?=$id;?>">
+                        <input type="hidden" name="visitor" value="<?=$id_main;?>">
                         <div class="form-group">
-                            <label for="name">Date of Arrival</label>
-                            <input type="date" class="form-control" value="<?=check_if("arrival")?>" name="arrival" id="arrival" placeholder="Date of Arrival">
+                            <label for="name">Date of Arrival<span class="required-mark">*</span></label>
+                            <input type="date" class="form-control" required value="<?=check_if("arrival")?>" name="arrival" id="arrival" placeholder="Date of Arrival">
                         </div>
                         <div class="form-group">
                             <label for="name">Departure date</label>

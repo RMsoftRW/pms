@@ -1,27 +1,10 @@
 <?php
     require_once("includes/validate_credentials.php");
 
-$sql = "SELECT * FROM user WHERE username ='{$_SESSION["username"]}' AND id='{$_SESSION["id"]}' AND active='1' LIMIT 1";
+$sql = "SELECT * FROM user WHERE status='1' AND username ='{$_SESSION["username"]}' AND id='{$_SESSION["id"]}' LIMIT 1";
 $query = $database->query($sql);
 $user=$database->fetch_array($query);
 
-
-if(isset($_POST['update'])){
-    $fn = $database->escape_value($_POST['firstname']);
-    $ln = $database->escape_value($_POST['lastname']);
-    $mn = $database->escape_value($_POST['middlename']);
-    $email = $database->escape_value($_POST['email']);
-    $u = $database->escape_value($_POST['username']);
-    if(!empty($fn) && !empty($ln) && !empty($email) && !empty($u)){
-        $stmts = $database->query("UPDATE user SET fname = '$fn', lname='$ln', mname='$mn', email='$email', username='$u' WHERE id = '{$_SESSION["id"]}'") ;
-        $res=$database->affected_rows($stmts);
-        if($res==1){
-            header('Location:profile ');
-        }
-    }
-
-
-}
 
 ?>
 <!doctype html>
@@ -81,15 +64,15 @@ if(isset($_POST['update'])){
                             <div id="register_div">
                                 <div class="card-body">
 
-                                    <form id="profile"   action="" method="post" novalidate="novalidate" enctype="multipart/form-data">
+                                    <form id="update_profile"   onsubmit="return false" method="post" novalidate="novalidate" enctype="multipart/form-data">
 
 
                                                 <div class="row form-group">
                                                     <div class=" col-md-3">
-                                                        <label class="form-label">First Name</label>
+                                                        <label class="form-label">First Name<span class="required-mark">*</span></label>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <input type="text" class="form-control" name="firstname" id="firstname" value="<?php echo $user["fname"]; ?>">
+                                                        <input type="text" class="form-control" name="firstname" minlength="2" autocomplete="off" required id="firstname" value="<?php echo $user["fname"]; ?>">
 
                                                     </div>
                                                 </div>
@@ -99,17 +82,17 @@ if(isset($_POST['update'])){
                                                             <label class="form-label">Middle name</label>
                                                         </div>
                                                         <div class="col-md-9">
-                                                            <input type="text" class="form-control" name="middlename" id="middlename" value="<?php echo $user["mname"]; ?>">
+                                                            <input type="text" class="form-control" name="middlename" minlength="2" autocomplete="off" id="middlename" value="<?php echo $user["mname"]; ?>">
 
                                                         </div>
                                                     </div>
 
                                                 <div class="row form-group">
                                                     <div class=" col-md-3">
-                                                        <label class="form-label">Last Name</label>
+                                                        <label class="form-label">Last Name<span class="required-mark">*</span></label>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <input type="text" class="form-control" name="lastname" id="lastname" value="<?php echo $user["lname"]; ?>">
+                                                        <input type="text" class="form-control" name="lastname" required minlength="2" id="lastname" value="<?php echo $user["lname"]; ?>">
 
                                                     </div>
 
@@ -117,29 +100,26 @@ if(isset($_POST['update'])){
                                                 </div>
                                                 <div class="row form-group">
                                                     <div class=" col-md-3">
-                                                        <label class="form-label">Email</label>
+                                                        <label class="form-label">Email<span class="required-mark">*</span></label>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <input type="email" class="form-control"   name="email" id="email" value="<?php echo $user["email"]; ?>"  >
+                                                        <input type="email" class="form-control" required  name="email" id="email" value="<?php echo $user["email"]; ?>"  >
                                                     </div>
                                                 </div>
 
                                                 <div class="row form-group">
                                                     <div class=" col-md-3">
-                                                        <label class="form-label">Username</label>
+                                                        <label class="form-label">Username<span class="required-mark">*</span></label>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <input type="text" class="form-control" autocomplete="off"   name="username"  id="username" value="<?php echo $user["username"]; ?>" onkeyup="check_username_update(<?php echo $_SESSION["id"]; ?>)">
-                                                        <span id="username_status"></span>
+                                                        <input type="text" class="form-control" autocomplete="off" required minlength="4"   name="username"  id="username" value="<?php echo $user["username"]; ?>" onblur="check_username_update(<?php echo $_SESSION["id"]; ?>)">
+                                                        <span  id="username_status"></span>
                                                     </div>
-
-
+                                                    <input type="hidden" id="hash" name="hash" value="<?php echo $_SESSION['id']; ?>">
                                                 </div>
-                                                <span id="status"></span>
                                                 <div>
-                                                    <button id="updatebtn" name="update" type="submit" class="btn btn-md btn-info">
-                                                        Update
-                                                    </button>
+                                                    <button id="updatebtn" name="update" type="submit" class="btn btn-md btn-info" onclick="update_profile()">Update</button>
+                                                  <a href="profile" id="cancelbtn" name="cancel" type="submit" class="btn btn-md btn-danger">Cancel</a>
                                                 </div>
 
                                     </form>
@@ -169,8 +149,11 @@ if(isset($_POST['update'])){
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/plugins.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="js/ajax.js"></script>
 <script src="assets/js/vendor/jquery-1.11.3.min.js"></script>
+<script src="assets/js/jquery.validate.js"></script>
+<script src="js/ajax.js"></script>
+<script src="js/user.js"></script>
+<script src="assets/js/sweetalert.min.js"></script>
 
 
 </body>

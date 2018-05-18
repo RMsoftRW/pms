@@ -23,23 +23,22 @@ if (isset($_POST['save1'])) {
     $mother_name = $database->escape_value($_POST['mother_name']);
     $mother_nat = $database->escape_value($_POST['mother_nat']);
     $marital_status = $database->escape_value($_POST['marital_status']);
-    $spouse = $database->escape_value($_POST['spouse']);
 
     if (isset($_POST['update'])){
         $update_id = $_POST['update'];
-        $sql = "UPDATE diplomats SET given_names='$given',family_names='$fnames',other_names='$other',gender='$gender',dob='$dob',pob='$pob',nob='$nop',email='$email',telephone='$telephone',pass_no='$pass_no',nop='$nop',doi='$doi',doe='$doe',profession='$profession',occupation='$occupation',employer='$employer',father_name='$father_name',father_nat='$father_nat',mother_name='$mother_name',mother_nat='$mother_nat',marital_status='$marital_status',spouse='$spouse' WHERE id=$update_id";
+        $sql = "UPDATE diplomats SET given_names='$given',family_names='$fnames',other_names='$other',gender='$gender',dob='$dob',pob='$pob',nob='$nop',email='$email',telephone='$telephone',pass_no='$pass_no',nop='$nop',doi='$doi',doe='$doe',profession='$profession',occupation='$occupation',employer='$employer',father_name='$father_name',father_nat='$father_nat',mother_name='$mother_name',mother_nat='$mother_nat',marital_status='$marital_status' WHERE id=$update_id";
         if ($database->query($sql)) {
             $id=$Hash->encrypt($update_id);
-            header("location:register-rwandan-diplomat");
+            header("location:diplomat-details?id=$id");
         }
     }
 
 
-    $sql= "INSERT INTO diplomats(given_names,family_names,other_names,gender,dob,pob,nob,email,telephone,pass_no,nop,doi,doe,profession,occupation,employer,father_name,father_nat,mother_name,mother_nat,marital_status,spouse,type) VALUES('$given','$fnames','$other','$gender','$dob','$pob','$nob','$email','$telephone','$pass_no','$nop','$doi','$doe','$profession','$occupation','$employer','$father_name','$father_nat','$mother_name','$mother_nat','$marital_status','$spouse','rwandan_diplomats')";
+    $sql= "INSERT INTO diplomats(given_names,family_names,other_names,gender,dob,pob,nob,email,telephone,pass_no,nop,doi,doe,profession,occupation,employer,father_name,father_nat,mother_name,mother_nat,marital_status,type) VALUES('$given','$fnames','$other','$gender','$dob','$pob','$nob','$email','$telephone','$pass_no','$nop','$doi','$doe','$profession','$occupation','$employer','$father_name','$father_nat','$mother_name','$mother_nat','$marital_status','4')";
 
     if ($database->query($sql)) {
         $id=$Hash->encrypt($database->inset_id());
-        header("location:register-rwandan-diplomat");
+        header("location:diplomat-details?$id");
     }
 
 

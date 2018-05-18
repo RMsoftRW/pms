@@ -17,7 +17,7 @@
                $display= "display";
             }
             elseif ($rowh['owner_type']== 2) {
-               $display= "displayperson";
+               $display= "diplomat-details";
             }
         // deleting a House
         if(isset($_POST['del'])){

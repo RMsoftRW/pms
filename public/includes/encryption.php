@@ -2,51 +2,36 @@
 
 class Encryption
   {
-    protected $method = 'AES-128-CTR';
-    private $key = "MOFA_ENC_KEY_0";
 
-    protected function iv_bytes()
+      public function encrypt($data)
+        {
+            $output = false;
+            $encrypt_method = "AES-256-CBC";
+            $secret_key = '@Secrety key PMS';
+            $secret_iv = '@Secrety key PMS iv';
+            $iv = substr(hash('sha256', $secret_iv), 0, 16);
+            $key = hash('sha256', $secret_key);
+            $output = openssl_encrypt($data, $encrypt_method, $key, 0, $iv);
+            $output = base64_encode($output);
+            return $output;
+        }
+
+    public function decrypt($data)
     {
-      return openssl_cipher_iv_length($this->method);
+
+        $output = false;
+        $encrypt_method = "AES-256-CBC";
+        $secret_key = '@Secrety key PMS';
+        $secret_iv = '@Secrety key PMS iv';
+        $key = hash('sha256', $secret_key);
+
+        $iv = substr(hash('sha256', $secret_iv), 0, 16);
+        $output = openssl_decrypt(base64_decode($data), $encrypt_method, $key, 0, $iv);
+
+
+        return $output;
+
     }
-
-  public function __construct($key = false, $method = false)
-  {
-    
-        if(ctype_print($key)) {
-          $this->key = openssl_digest($key, 'SHA256', true);
-        } else {
-          $this->key = $key;
-        }
-
-      if($method) {
-        if(in_array($method, openssl_get_cipher_methods())) {
-            $this->method = $method;
-        } 
-        else {
-          die(__METHOD__ . ": unrecognised encryption method: {$method}");
-        }
-      }
-    }
-
-  public function encrypt($data)
-  {
-    $iv = openssl_random_pseudo_bytes($this->iv_bytes());
-    $encrypted_string = bin2hex($iv) . openssl_encrypt($data, $this->method, $this->key, 0, $iv);
-    return $encrypted_string;
-  }
-
-  public function decrypt($data)
-  {
-    $iv_strlen = 2  * $this->iv_bytes();
-    if(preg_match("/^(.{" . $iv_strlen . "})(.+)$/", $data, $regs)) {
-      list(, $iv, $crypted_string) = $regs;
-      $decrypted_string = openssl_decrypt($crypted_string, $this->method, $this->key, 0, hex2bin($iv));
-      return $decrypted_string;
-    } else {
-      return false;
-    }
-  }
 
 }
 

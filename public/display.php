@@ -1,15 +1,47 @@
-<?php require_once("includes/validate_credentials.php"); ?>
+<?php require_once("includes/validate_credentials.php");
+require_once "functions.php"?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+
 <head>
 <?php require_once("includes/head.php"); ?>
+<style type="text/css">
+  
+ul {
+    list-style: none;
+}
+.section-about .li-info {
+    padding-bottom: 10px;
+}
+section-about .title-info {
+    width: 65px;
+}
+
+.content {
+    font-family: 'PT Sans Narrow',sans-serif;
+    font-size: 16px;
+}
+.section-about .title-info {
+    display: inline-block;
+    width: 80px;
+}
+a {
+    color: #0487cc;
+    text-decoration: none;
+}
+
+.btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
+.btn-labeled {padding-top: 0;padding-bottom: 0;}
+.btn { margin-bottom:10px; }
+</style>
 </head>
 <body>
-<?php 
-                $id=$Hash->decrypt($_GET['id']);
+<?php           
+
+                $id = encrypt_decrypt('decrypt', $_GET['id']);
                 $stmt = $database->query("SELECT *  FROM institution_details WHERE id = '$id'");
                 $row = $database->fetch_array($stmt);
                 $user= $_SESSION['username'];
@@ -42,7 +74,7 @@
                              
                           //redirect to index page
                           $values['id']=$row['id'];
-                          header('Location: display?id='. $Hash->encrypt($values['id']).'');
+                          header('Location: display?id='. encrypt_decrypt('encrypt', $values['id']).'');
                           exit;
 
                       } catch(PDOException $e) {
@@ -73,7 +105,7 @@
              
                 //redirect to display page
                 $values['id']=$row['id'];
-                header('Location: display?id='. $Hash->encrypt($values['id']).'');
+                header('Location: display?id='. encrypt_decrypt('encrypt', $values['id']).'');
                 exit;
 
             } catch(PDOException $e) {
@@ -101,13 +133,15 @@
 
                 $owner = $row['id'];
                  $cmt = $database->escape_value($comment);
+                 $target_file = basename($_FILES["attachment"]["name"]);
+                move_uploaded_file($_FILES["attachment"]['tmp_name'], $target_file);
                 //insert into database
-                $stmtca = $database->query("INSERT INTO comments (user,comment,attachment,owner,owner_type)
-                 VALUES ('$user_id', '$cmt', $attachment, '$owner','1')") ;
+                $stmtca = $database->query("INSERT INTO comments (user,comment,owner,owner_type)
+                 VALUES ('$user_id', '$cmt', '$owner','1')") ;
   
                 //redirect to display page
                 $valuered['id']=$row['id'];
-                header('Location: display?id='.$Hash->encrypt($valuered['id']).'');
+                header('Location: display?id='.encrypt_decrypt('encrypt', $valuered['id']).'');
                 exit;
 
             } catch(PDOException $e) {
@@ -137,24 +171,7 @@
      <?php require_once 'includes/top_nav.php'; ?>
         <!-- Header-->
 
-        <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Dashboard</h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li class="active">Dashboard</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="content mt-3">
         <!-- displaying institution basic info -->
@@ -189,11 +206,11 @@
                                                           $stmtloc = $database->query("SELECT * FROM countries WHERE id= '$cnloc'");
                                                           $rowloc = $database->fetch_array($stmtloc);
                                                           $value['id']= $row['id'];
-                                                          if ($rowin['Name']== "O N G") {
+                                                          if ($rowin['Name']== "NGO") {
                                                             echo '
                                                                
                                                                <li class="list-group-item"><b>Name:</b> '.$row['name'].'</li>
-                                                                       <li class="list-group-item"><b>Type:</b> '.$rowin['Name'].'</li>
+                                                                       <li class="list-group-item"><span class="title-info"><b>Type:</b></span> <span class="info">'.$rowin['Name'].'</li></span>
                                                                        <li class="list-group-item"><b>Email:</b> '.$row['email'].'</li>
                                                                        <li class="list-group-item"><b>Telephone:</b> '.$row['telephone'].'</li>
                                                                        <li class="list-group-item"><b>Contact Person:</b> '.$row['contact_person'].'</li>
@@ -206,8 +223,9 @@
                                                                        <li class="list-group-item"><b>Responsible Ministry:</b> '.$row['responsible_ministry'].'</li>
                                                                        <li class="list-group-item"><b>Attachment:</b> <a href="'.$row['attachment'].'" download>'.$row['attachment'].'</a></li>
                                                                        <li class="list-group-item"><b>Payment date:</b> '.$row['payment_date'].'</li>
-                                                                       <li class="list-group-item"><a href="register-ngo?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
-                                                                     <button type="button" class="btn btn-secondary">Edit</button></a></li>
+                                                                       <li class="list-group-item"><a href="register-ngo?id='.encrypt_decrypt('encrypt', $value['id']).'" style="font_size:30px;" >
+                                                                      <button type="button" class="btn btn-labeled btn-danger">
+                                                                      <span class="btn-label"><i class="fa fa-edit"></i></span>Edit</button></a></li>
                                                                   ';
                                                           }
                                                           elseif ($rowin['Name']== "Rwandan Embassies") {
@@ -221,8 +239,8 @@
                                                                        <li class="list-group-item"><b>Contact phone:</b> '.$row['contact_phone'].'</li>
                                                                        <li class="list-group-item"><b>Country:</b> '.$rowcntry['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
-                                                                       <li class="list-group-item"><a href="register-rwandan-embassy?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
-                                                                     <button type="button" class="btn btn-secondary">Edit</button></a></li>
+                                                                       <li class="list-group-item"><a href="register-rwandan-embassy?id='.encrypt_decrypt('encrypt', $value['id']).'" style="font_size:30px;" >
+                                                                     <button type="button" class="btn btn-labeled btn-danger"><span class="btn-label"><i class="fa fa-edit"></i></span>Edit</button></a></li>
                                                                   ';
                                                           }
                                                           elseif ($rowin['Name']== "Foreign Embassies") {
@@ -237,8 +255,8 @@
                                                                        <li class="list-group-item"><b>Country:</b> '.$rowcntry['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Country Represented:</b> '.$rowloc['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
-                                                                       <li class="list-group-item"><a href="register-foreign-embassy?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
-                                                                     <button type="button" class="btn btn-secondary">Edit</button></a></li>
+                                                                       <li class="list-group-item"><a href="register-foreign-embassy?id='.encrypt_decrypt('encrypt', $value['id']).'" style="font_size:30px;" >
+                                                                     <button type="button" class="btn btn-labeled btn-danger"><span class="btn-label"><i class="fa fa-edit"></i></span>Edit</button></a></li>
                                                                   ';
                                                           }
                                                           elseif ($rowin['Name']== "MOFA") {
@@ -252,8 +270,8 @@
                                                                        <li class="list-group-item"><b>Contact phone:</b> '.$row['contact_phone'].'</li>
                                                                        <li class="list-group-item"><b>Country:</b> '.$rowcntry['nicename'].'</li>
                                                                        <li class="list-group-item"><b>Location:</b> '.$row['location'].'</li>
-                                                                       <li class="list-group-item"><a href="editin?id='.$Hash->encrypt($value['id']).'" style="font_size:30px;" >
-                                                                     <button type="button" class="btn btn-secondary">Edit</button></a></li>
+                                                                       <li class="list-group-item"><a href="editin?id='.encrypt_decrypt('encrypt', $value['id']).'" style="font_size:30px;" >
+                                                                     <button type="button" class="btn btn-labeled btn-danger"><span class="btn-label"><i class="fa fa-edit"></i></span>Edit</button></a></li>
                                                                   ';
                                                           }
                                                           
@@ -265,13 +283,13 @@
                                             <div class="tab-pane fade" id="cars" role="tabpanel" aria-labelledby="cars-tab">
                                                 <ul class="list-group list-group-flush">
                                                   <li class="list-group-item">
-                                                      <button type="button" class="btn btn-success mb-1" data-toggle="modal" data-target="#addcar">
-                                                         Add Car
+                                                      <button type="button" class="btn btn-secondary mb-1" data-toggle="modal" data-target="#addcar">
+                                                         <i class="fa fa-plus-square"></i>&nbsp;Add Car
                                                         </button>
                                                     </li>
                                                       <?php 
                                                     
-                                                      $car_id= $Hash->decrypt($_GET['id']);
+                                                      $car_id= encrypt_decrypt('decrypt', $_GET['id']);
                                                       $stmtc = $database->query("SELECT * FROM cars WHERE owner = '$car_id' AND status='1' AND owner_type = '1' ");
                                                       $num=$database->num_rows($stmtc);
                                                       if ($num != 0) {
@@ -281,7 +299,7 @@
                                                               echo '
 
                                                                   <li class="list-group-item">
-                                                                  <a href="cars?id='.$Hash->encrypt($value['id']).'">
+                                                                  <a href="cars?id='.encrypt_decrypt('encrypt', $value['id']).'">
                                                                   <b>Car'.$c.' Plate Number:</b> '.$rowi['plate_nber'].'
                                                                   </a>
                                                                  </li>
@@ -304,13 +322,13 @@
                                             <div class="tab-pane fade" id="houses" role="tabpanel" aria-labelledby="houses-tab">
                                               <ul class="list-group list-group-flush">
                                                <li class="list-group-item">
-                                                 <button type="button" class="btn btn-success mb-1" data-toggle="modal" data-target="#addhouse">
-                                                  Add House
+                                                 <button type="button" class="btn btn-secondary mb-1" data-toggle="modal" data-target="#addhouse">
+                                                  <i class="fa fa-plus-square"></i>&nbsp;Add House
                                                  </button>
                                                </li>
                                                  <?php 
                                                 
-                                                    $house_id= $Hash->decrypt($_GET['id']);
+                                                    $house_id= encrypt_decrypt('decrypt', $_GET['id']);
                                                     $stmth = $database->query("SELECT * FROM houses WHERE owner = '$house_id' AND status='1' AND owner_type = '1' ");
                                                     $numh=$database->num_rows($stmth);
                                                     if ($numh != 0) {
@@ -322,7 +340,7 @@
                                                                  echo ' 
                                                                       
                                                                      <li class="list-group-item">
-                                                                     <a href="houses?id='.$Hash->encrypt($valueho['id']).'">
+                                                                     <a href="houses?id='.encrypt_decrypt('encrypt', $valueho['id']).'">
                                                                      <div>
                                                                     <b>Type of House number '.$n.':</b> '.$rowh['type'].'<br/>
                                                                      <b>Location:</b> '.$rowh['location'].'
@@ -350,7 +368,7 @@
                             </div>
                         </div>
                       <!-- Comments section -->
-                         <div class="col-lg-12">
+                         <div class="col-lg-7">
                             <div class="card">
                                 <div class="card-header">
                                     <h4>Comments</h4>
@@ -366,7 +384,7 @@
                                 <label >Attachment</label>
                                 <div class="form-group">
                                         <div class="form-line">
-                                            <input type='file' onchange="readURL(this,<?php echo $id; ?>,<?php echo $owner_type; ?>);" class="form-control" />
+                                            <input type='file'  class="form-control" name="attachment" value="<?php if(isset($error)){ echo $_POST['attachment'];}?>" />
                                         </div>
                                     </div>
                                 <input type='submit' name='send' value='Send' class="btn btn-primary ">
@@ -375,7 +393,7 @@
                             <ul class="list-group list-group-flush card-body">
                               <?php 
                                                 
-                                                 $cmnt_id= $Hash->decrypt($_GET['id']);
+                                                 $cmnt_id= encrypt_decrypt('decrypt', $_GET['id']);
                                                  $stmtc = $database->query("SELECT * FROM comments WHERE owner = '$cmnt_id' AND status ='1' AND owner_type = '1' ");
                                                  $nums=$database->num_rows($stmtc);
 
@@ -394,7 +412,7 @@
 
                                                               ';
                                                               if ($user==$usernm) {
-                                                                echo ' <a href="editcomment?id='.$Hash->encrypt($valuecmnt['id']).'">Edit</a>';
+                                                                echo ' <a href="editcomment?id='.encrypt_decrypt('encrypt', $valuecmnt['id']).'">Edit</a>';
                                                               }
                                                               echo ' </li>';
                                                               

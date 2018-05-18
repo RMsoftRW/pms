@@ -1,6 +1,6 @@
 //<!-- ******** ajax.js ******** -->
-function _(el){
-    return document.getElementById(el);
+function _(x){
+    return document.getElementById(x);
 }
 function ajaxObj( meth, url ) {
 	var x = new XMLHttpRequest();

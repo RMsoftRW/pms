@@ -120,18 +120,19 @@ label{
                     <legend>Registration Form  for NGO</legend>
                     <form action="save-ngo.php" method="POST" id="form">
                   <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Embassy Name" minlength="4" value="<?=check_if('name');?>">
+                    <label for="name">Name<span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name"  value="<?=check_if('name');?>">
                   </div>
                   <div class="form-group">
                     <label for="name">Phone</label>
-                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Embassy Phone" minlength="10" maxlength="13" value="<?=check_if('telephone');?>">
+                    <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter  Phone" minlength="10" maxlength="13" value="<?=check_if('telephone');?>">
                   </div>
                   <div class="form-group">
-                    <label for="name">Email</label>
-                    <input type="text" class="form-control" name="email" id="email" placeholder="Enter Embassy Phone" value="<?=check_if('email');?>">
+                    <label for="name">Email<span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" name="email" id="email" placeholder="Enter  Email" value="<?=check_if('email');?>">
                   </div>
-                  <input type="hidden" name="institution" value="4">
+                  <input type="hidden" name="institution" value="4"><?php if (isset($_GET['id'])){?>
+                    <input type="hidden" name="id" value="<?=$Hash->decrypt($_GET['id'])?>"> <?php } ?>
                   <div class="form-group">
                     <label for="contact_phone">Contact Person Phone Number</label>
                     <input type="text" class="form-control" id="contact_phone" placeholder="Enter Contact Person Phone Number" name="contact_phone" value="<?=check_if('contact_phone');?>">
@@ -141,15 +142,16 @@ label{
                     <input type="text" class="form-control" id="contact_name" placeholder="Enter Contact Person Full Names" name="contact_name" value="<?=check_if('contact_person');?>">
                   </div>
                   <div class="form-group">
-                    <label for="country">Country</label>
+                    <label for="country">Country<span class="required-mark">*</span></label>
                         <select class="form-control" id="country" name="country">
+                            <option id="option" value="0">SELECT A COUNTRY</option>
                     <?php $st2 = $database->query("SELECT * FROM countries"); 
                     foreach ($st2 as $key => $value) {?>
-                        <option id="option" value="<?=$value['id']?>"><?=$value['name']?></option><?php } ?>
+                        <option id="option" value="<?=$value['id']?>" <?=check_if("country_loc")=== $value['id']? " selected":"" ?>><?=$value['name']?></option><?php } ?>
                         </select>
                   </div>
                   <div class="form-group">
-                    <label for="location"> Location</label>
+                    <label for="location"> Location<span class="required-mark">*</span></label>
                     <input type="text" name="location" class="form-control" id="location" placeholder="Full Address" value="<?=check_if('location');?>">  
                   </div>
                   <div>
@@ -174,15 +176,21 @@ label{
 <script src="assets/js/lib/vector-map/jquery.vmap.sampledata.js"></script>
 <script src="assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
 <script type="text/javascript">
-    $("#country option[value=178]").prop('selected', true);
+    if ($("#country").val()==0)
+        $("#country option[value=178]").prop('selected', true);
+    else console.log($("#country").val());
     $(function() {
     $.validator.addMethod("phoneCheck",function (value) {
         return /^\+?\d{10,13}/.test(value) || value ==="";
     },' Enter a valid Phone number');
+    $.validator.addMethod("validCountry", function (value,element,arg) {
+        return arg !== value;
+    }, "Select a Valid Country");
     $("#form").validate({
       rules: {
         name: "required",
         location: "required",
+        country:{min :1},
         phone    :{ phoneCheck: true,required:false},
         contact_phone :{ phoneCheck: true},
         email: {
@@ -191,6 +199,7 @@ label{
         }
         
       },
+      messages:{country:"please select a valid country"},
       submitHandler: function(form) {
         form.submit();
       }

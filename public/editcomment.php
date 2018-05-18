@@ -24,7 +24,7 @@
                      header('Location: display?id='.$Hash->encrypt($valuecmnt['id']).'');
                 }
                 elseif ($rowcmnt['owner_type']== 2) {
-                     header('Location: displayperson?id='.$Hash->encrypt($valuecmnt['id']).'');
+                     header('Location: diplomat-details?id='.$Hash->encrypt($valuecmnt['id']).'');
                 }
                
             }

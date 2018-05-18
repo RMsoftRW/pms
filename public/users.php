@@ -96,6 +96,7 @@
         }
         table.table td a.delete {
             color: #F44336;
+            cursor: pointer;
         }
         table.table td i {
             font-size: 19px;
@@ -149,6 +150,7 @@
         .search-box {
             position: relative;
             float: right;
+            margin-top: 125px;
         }
         .search-box .input-group {
             min-width: 200px;
@@ -378,22 +380,13 @@
                 <div class="table-filter">
                     <div class="row">
                         <div class="col-sm-3">
-                            <div class="show-entries">
-                                <span>Show</span>
-                                <select class="form-control">
-                                    <option>5</option>
-                                    <option>10</option>
-                                    <option>15</option>
-                                    <option>20</option>
-                                </select>
-                                <span>entries</span>
-                            </div>
+
                         </div>
                         <div class="col-sm-9">
                             <div class="search-box">
                                 <div class="input-group" id="igroup">
                                     <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                    <input id="search" type="text" onkeyup="search()" class="form-control" placeholder="Search&hellip;">
+                                    <input id="search" type="text" autocomplete="off" onkeyup="search()" class="form-control" placeholder="Search&hellip;">
                                 </div>
                             </div>
 
@@ -401,15 +394,10 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover" id="user-table">
                     <thead>
                     <tr>
-                        <th>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
-							</span>
-                        </th>
+
                         <th>#</th>
                         <th>Names</th>
                         <th>Email</th>
@@ -421,23 +409,18 @@
                     </tr>
                     </thead>
                     <tbody id="test">
-                    <?php $sql="SELECT * FROM user WHERE status = 'active'";
+                    <?php $sql="SELECT * FROM user WHERE status = '1'";
                     $result=$database->query($sql);
                     $count=1;
                     while ($row=$database->fetch_array($result)) {?>
                         <tr>
-                            <td>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="<?php echo $row["id"]?>" name="options[]" value="<?php echo $row["id"]?>">
-                                <label for="checkbox"></label>
-							</span>
-                            </td>
+
                             <td><?=$count; ?></td>
-                            <?php if (file_exists("../uploads/user/".$row['username']."/".$row["avatar"])){
-                                $src="../uploads/user/".$row['username']."/".$row["avatar"];
+                            <?php if ($row["avatar"] !="" && (file_exists("uploads/avatar/".$row["avatar"]))){
+                                $src="uploads/avatar/".$row["avatar"];
                             }
                             else{
-                                $src="images/default_profile.png";
+                                $src="images/default_profile.jpg";
                             }?>
                             <td><img src="<?php echo $src; ?>" class="avatar" alt="Avatar"><?php echo $row['fname']." ".$row['mname']." ".$row["lname"]; ?></td>
                             <td><?php echo $row['email']; ?></td>
@@ -455,7 +438,7 @@
                             <td><?php echo $database->get_item("level","id",$row['level'],"name"); ?></td>
                             <td>
                                 <a href="edituser?id=<?php echo $Hash->encrypt($row['id']);?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                <a href="#deleteuserModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                <a class="delete" onclick="return confirm('Are you sure to delete data?')?deleteUser('<?php echo $row['id']; ?>',this):false;"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                             </td>
                         </tr>
                         <?php  $count++; }
@@ -463,42 +446,9 @@
 
                     </tbody>
                 </table>
-
-                <div class="clearfix">
-                    <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                    <ul class="pagination">
-                        <li class="page-item disabled"><a href="#">Previous</a></li>
-                        <li class="page-item"><a href="#" class="page-link">1</a></li>
-                        <li class="page-item"><a href="#" class="page-link">2</a></li>
-                        <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                        <li class="page-item"><a href="#" class="page-link">4</a></li>
-                        <li class="page-item"><a href="#" class="page-link">5</a></li>
-                        <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
 
-        <!-- Delete Modal HTML -->
-        <div id="deleteuserModal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form>
-                        <div class="modal-header">
-                            <h4 class="modal-title">Delete User</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Are you sure you want to delete these Records?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                            <input type="submit" class="btn btn-danger" value="Delete">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div><!-- .animated -->
 </div><!-- .content -->
 
@@ -511,7 +461,7 @@
 <script src="assets/js/vendor/jquery-1.11.3.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/plugins.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/bootstrap.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="js/ajax.js"></script>
 <script type="text/javascript">
@@ -530,24 +480,6 @@
               });
           });*/
 
-        // Select/Deselect checkboxes
-        var checkbox = $('table tbody input[type="checkbox"]');
-        $("#selectAll").click(function(){
-            if(this.checked){
-                checkbox.each(function(){
-                    this.checked = true;
-                });
-            } else{
-                checkbox.each(function(){
-                    this.checked = false;
-                });
-            }
-        });
-        checkbox.click(function(){
-            if(!this.checked){
-                $("#selectAll").prop("checked", false);
-            }
-        });
 
     });
     function deleteUser(id,r) {
@@ -556,24 +488,24 @@
         var ajax = ajaxObj("POST", "userAction");
         ajax.onreadystatechange = function() {
             if(ajaxReturn(ajax) == true) {
-                alert(ajax.responseText);
                 if(ajax.responseText == "deleted"){
                     var i = r.parentNode.parentNode.rowIndex;
                     document.getElementById("user-table").deleteRow(i);
                 }
             }
         };
-        ajax.send("id="+id+"&action_type=delete");
+        ajax.send("id="+id+"&delete=delete");
 
 
     }
+
     function search() {
-        var level=_('search').value;
+        var word=_('search').value;
         $.ajax({
             url:"userAction",
             method: "post",
             data:{
-                level:level
+                word:word
             },
             success : function (data) {
 

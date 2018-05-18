@@ -27,10 +27,8 @@ if(isset($_POST["add"])){
 
     if($insert)
     {
-        if (!file_exists("../uploads/users/$username")) {
-            mkdir("../uploads/users/$username", 0755);
+
             echo "success";
-        }
 
     }
 
@@ -39,23 +37,23 @@ if(isset($_POST["add"])){
 
 //check if username exist
 if(isset($_POST["username_check"])){
-    $username =$database->escape_value( $_POST['username']);
+    $username =strtolower( $database->escape_value( $_POST['username']));
 
-    $sql = "SELECT * FROM user WHERE username='$username' AND status='active'";
+    $sql = "SELECT * FROM user WHERE lower(`username`)='$username' AND status='1'";
     $results=$database->query($sql);
     $n = $database->num_rows($results);
-        if($n >0){
+    if($n >0){
         echo "taken";
-}
-else{
-    echo "not_taken";
+    }
+    else{
+        echo "not_taken";
 
-}}
+    }}
 
 if(isset($_POST["username_update"])){
     $username =$database->escape_value( $_POST['username']);
     $id=$_POST["id"];
-    $sql = "SELECT * FROM user WHERE username='$username' AND id !=$id AND status='active'";
+    $sql = "SELECT * FROM user WHERE username='$username' AND id !='$id' AND status='1'";
     $results=$database->query($sql);
     $n = $database->num_rows($results);
     if($n >0){
@@ -66,7 +64,6 @@ if(isset($_POST["username_update"])){
 
     }}
 if (isset($_POST["change"])){
-
     $id=$_POST["id"];
     $p=$_POST["p"];
     $pnew=$_POST["p1"];
@@ -75,8 +72,8 @@ if (isset($_POST["change"])){
     $row=$database->fetch_array($results);
     $hash_p=md5($p);
     $hash_pnew=md5($pnew);
-    if($p!=$row["password"]){
-        echo "Invalid";
+    if($hash_p!=$row["password"]){
+        echo "invalid";
     }
     else{
 
@@ -103,6 +100,9 @@ if(isset($_POST["edit"])){
         $id_institution = $_POST['institution'];
         $password=$_POST['password'];
         $rn=0;
+        $stm="SELECT username FROM user WHERE id='$id' AND status='1'";
+        $qr=$database->query($stm);
+        $r=$database->fetch_array($qr);
         if($password==""){
             $stmts = $database->query("UPDATE user SET fname = '$fn', lname='$ln', mname='$mn', email='$email', username='$u', level='$level', id_institution='$id_institution' WHERE id = '$id'") ;
             $rn=$database->affected_rows($stmts);
@@ -115,11 +115,10 @@ if(isset($_POST["edit"])){
 
 
         if($rn==1){
+
             echo "updated";
         }
-        else{
-            echo " error";
-        }
+
     }
 
 
@@ -128,7 +127,7 @@ if(isset($_POST['delete'])){
     if(!empty($_POST['id'])){
         $id = $_POST['id'];
 
-        $query = "UPDATE user SET status='deleted' WHERE id=".$id;
+        $query = "UPDATE user SET status='0' WHERE id=".$id;
         if($database->query($query)){
             echo "deleted";
         }
@@ -137,16 +136,15 @@ if(isset($_POST['delete'])){
 
     }
 }
-
-if (isset($_POST["level"])){
-    $level=$database->escape_value(trim($_POST["level"]));
+if (isset($_POST["word"])){
+    $level=$database->escape_value(trim($_POST["word"]));
     $keyword=strtolower($level);
     if($keyword==""){
 
-        $st=$database->query("SELECT * FROM user WHERE status = 'active'");
+        $st=$database->query("SELECT * FROM user WHERE status = '1'");
     }
     else{
-        $st =$database->query("SELECT * from user where lower (`fname`) LIKE '$keyword%' OR lower (`lname`) LIKE '$keyword%' OR lower (`mname`) LIKE '$keyword%' OR lower (`email`) LIKE '$keyword%' AND status='active'");
+        $st =$database->query("SELECT * from user where status='1' AND (lower (`fname`) LIKE '$keyword%' OR lower (`lname`) LIKE '$keyword%' OR lower (`mname`) LIKE '$keyword%' OR lower (`email`) LIKE '$keyword%' OR lower (`username`) LIKE '$keyword%') ");
 
     }
     $html="";
@@ -165,13 +163,12 @@ if (isset($_POST["level"])){
         $id=$row["id"];
         $Hash=new Encryption();
         $id_hash=$Hash->encrypt($id);
-        $show="<tr><td><span class='custom-checkbox'><input type='checkbox' id='.$id.' name='options[]' value=$id><label for='checkbox'></label></span></td>";
-        $show.=" <td>$count</td>";
-        if (file_exists("../uploads/user/".$u."/".$avatar)){
-            $src="../uploads/user/".$u."/".$avatar;
+        $show=" <td>$count</td>";
+        if ($row["avatar"] !="" && (file_exists("uploads/avatar/".$row["avatar"]))){
+            $src="uploads/avatar/".$avatar;
         }
         else{
-            $src="images/default_profile.png";
+            $src="images/default_profile.jpg";
         }
         $show.="<td><img src='$src' class='avatar' alt='Avatar'> $fname $mname $lname</td>
                 <td>$email</td>
@@ -191,19 +188,34 @@ if (isset($_POST["level"])){
         $i=$database->get_item("level","id",$row['level'],"name");
         $show.="<td>$i</td>
         <td><a href='edituser?id=$id_hash' class='edit'><i class='material-icons' data-toggle='tooltip' title='Edit'>&#xE254;</i></a>
-                                <a href='#deleteuserModal' class='delete' data-toggle='modal'><i class='material-icons' data-toggle='tooltip' title='Delete'>&#xE872;</i></a>
-                            </td>
+        <a class='delete' onclick='return confirm(\"Are you sure to delete data?\")?deleteUser($id,this):false;'><i class='material-icons' data-toggle='tooltip' title='Delete'>&#xE872;</i></a></td>
         </tr>";
         $count++;
         $html.=$show;
     }
     if($html==""){
-        echo "<tr>No user found</tr>";
+        echo "<tr class='text-center'>No user found</tr>";
     }
     else {
         echo $html;
     }
 }
 
+if(isset($_POST['update'])){
+    $fn = $database->escape_value($_POST['firstname']);
+    $ln = $database->escape_value($_POST['lastname']);
+    $mn = $database->escape_value($_POST['middlename']);
+    $email = $database->escape_value($_POST['email']);
+    $u = $database->escape_value($_POST['username']);
+    $id=$_POST['id'];
+    if(!empty($fn) && !empty($ln) && !empty($email) && !empty($u)){
+        $stmts = $database->query("UPDATE user SET fname = '$fn', lname='$ln', mname='$mn', email='$email', username='$u' WHERE id = '$id'") ;
+        $res=$database->affected_rows($stmts);
+        if($res==1){
+            echo "updated";
+        }
+    }
 
+
+}
 

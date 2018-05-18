@@ -33,16 +33,16 @@ if (isset($_POST['save1'])) {
             header("location:register-visitor-step2?id=$id");
         }
     }
+    else{
 
-
-    $sql= "INSERT INTO diplomats(given_names,family_names,other_names,gender,dob,pob,nob,email,telephone,pass_no,nop,doi,doe,profession,occupation,employer,father_name,father_nat,mother_name,mother_nat,marital_status,spouse,type) VALUES('$given','$fnames','$other','$gender','$dob','$pob','$nob','$email','$telephone','$pass_no','$nop','$doi','$doe','$profession','$occupation','$employer','$father_name','$father_nat','$mother_name','$mother_nat','$marital_status','$spouse','visitor')";
+    $sql= "INSERT INTO diplomats(given_names,family_names,other_names,gender,dob,pob,nob,email,telephone,pass_no,nop,doi,doe,profession,occupation,employer,father_name,father_nat,mother_name,mother_nat,marital_status,spouse,type) VALUES('$given','$fnames','$other','$gender','$dob','$pob','$nob','$email','$telephone','$pass_no','$nop','$doi','$doe','$profession','$occupation','$employer','$father_name','$father_nat','$mother_name','$mother_nat','$marital_status','$spouse','5')";
 
     if ($database->query($sql)) {
         $id=$Hash->encrypt($database->inset_id());
         header("location:register-visitor-step2?id=$id");
     }
 
-
+    }
 }
 if (isset($_POST['save2'])){
     $reason = $database->escape_value($_POST['reason']);
@@ -52,10 +52,8 @@ if (isset($_POST['save2'])){
     $embassy = $_POST['embassy'];
     $visitor = $_POST['visitor'];
     $protocol= $database->escape_value($_POST['protocol']);
-    if (isset($_POST['ambass'])){
-        $visit = $_POST['ambass'];
-        echo $visit;
-
+    if ($_POST['visit']!==""){
+        $visit = $_POST['visit'];
         $sql = "UPDATE visit  SET visitor=$visitor,reason='$reason',host_person='$host_person',arrival='$arrival',departure='$departure',id_embassy='$embassy',protocol='$protocol' WHERE id=$visit";
         if ($database->query($sql)){
             $id=$Hash->encrypt($visitor);
@@ -68,7 +66,7 @@ if (isset($_POST['save2'])){
     if ($database->query($sql)) {
         $id = $database->inset_id();
         $database->query("UPDATE diplomats SET visit_details=$id WHERE id=$visitor");
-        $id=$Hash->encrypt($id);
+        $id=$Hash->encrypt($visitor);
         header("location:register-visitor-step3?id=$id");
     }
     }
