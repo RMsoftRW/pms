@@ -1,0 +1,52 @@
+
+
+/*//////////////////////////////////////////////////////////////////
+[ FONT ]*/
+
+
+@font-face {
+  font-family: Lato-Regular;
+  src: url('../fonts/Lato/Lato-Regular.ttf'); 
+}
+
+@font-face {
+  font-family: Lato-Bold;
+  src: url('../fonts/Lato/Lato-Bold.ttf'); 
+}
+
+
+
+thead{
+  padding: 10px !important;
+}
+
+td {font-family:  "Times New Roman";font-size: 14px;
+color: #272C33}
+#search {
+  border: transparent;
+  background: transparent;
+}
+#sss{
+  width: 35%;
+  margin-top: 20px;
+}
+.section {
+  margin: 20px auto;
+  width: 95%;
+  background: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  padding-bottom: 20px;
+}
+.read {
+  border: 1px solid #FFFFFF;
+  padding: 5px 20px;
+  border-radius: 100px;
+}
+.read i{
+  color: #E74C3C;
+  margin-left: 10px;
+}
+.table td, .table th{
+  padding-top:5px!important;
+  padding-bottom:5px!important;}
